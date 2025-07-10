@@ -41,7 +41,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String updateUser(ModifyDTO modifyDTO) {
-        return "";
+        User user = userRepository.findById(modifyDTO.getId()).orElseThrow(()->new SFException("409","用户不存在"));
+        if (user == null|| !passwordEncoder.matches(modifyDTO.getOldPassword(), user.getPassword())) {
+            throw new SFException("409","旧密码错误");
+        }
+        if(modifyDTO.getImage() != null && !modifyDTO.getImage().isEmpty()){
+            user.setImage(modifyDTO.getImage());
+        }
+        if (modifyDTO.getOldPassword() != null && !modifyDTO.getOldPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(modifyDTO.getOldPassword()));
+        }
+        if (modifyDTO.getUsername() != null && !modifyDTO.getUsername().isEmpty()) {
+            user.setUsername(modifyDTO.getUsername());
+        }
+        userRepository.save(user);
+        return "修改成功";
     }
 
     @Override

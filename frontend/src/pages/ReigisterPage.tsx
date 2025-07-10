@@ -1,6 +1,8 @@
 import {useRef, useState} from "react";
 import * as React from "react";
+import {useNavigate} from "react-router-dom";
 export function RegisterPage() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -106,8 +108,8 @@ export function RegisterPage() {
                                         className="w-full h-full object-cover"
                                     />
                                 ) : (
-                                    <div className="flex items-center justify-center w-full h-full">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <div className="flex items-center justify-center w-full h-full" >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" >
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                         </svg>
                                     </div>
@@ -224,7 +226,7 @@ export function RegisterPage() {
 
                     <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
                         <p className="text-center text-sm text-gray-600">
-                            已有账户? <a href="#" className="font-medium text-blue-600 hover:text-blue-500">登录</a>
+                            已有账户? <a href="#" className="font-medium text-blue-600 hover:text-blue-500" onClick={()=>{navigate("/home")}}>登录</a>
                         </p>
                     </div>
                 </div>

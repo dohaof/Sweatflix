@@ -6,6 +6,7 @@ import {LoginForm} from "./LoginForm.tsx";
 
 export function SideBar({isOpen}: {isOpen: boolean}): JSX.Element {
     const state = useContext(GlobalContext)
+    // const navigate = useNavigate();
     const handleLogin = (credentials:Credentials) => {
         // 实际项目中这里会有API调用
         console.log('登录请求:', credentials);
@@ -28,7 +29,7 @@ export function SideBar({isOpen}: {isOpen: boolean}): JSX.Element {
             <div className="p-6 h-full flex flex-col items-center">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">
-                        {state?.isLoggedIn ? '个人中心' : '登录/注册'}
+                        {state?.isLoggedIn ? '个人中心' : '登录'}
                     </h2>
                 </div>
                 <div className="flex-1 overflow-auto">

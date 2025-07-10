@@ -1,8 +1,10 @@
-import React, {useState, useRef, useEffect, useContext} from 'react';
+import React, {useState, useRef, useContext} from 'react';
 import {GlobalContext} from "../contexts/userContexts.tsx";
+import {useNavigate} from "react-router-dom";
 
 export function ModifyPage() {
     // 模拟当前用户数据（实际应用中应从上下文或API获取）
+    const navigate = useNavigate();
     const [currentUser] = useState({
         username: 'user123',
         image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80'
@@ -107,10 +109,9 @@ export function ModifyPage() {
                     <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6">
                         <div className="flex items-center justify-between">
                             <h2 className="text-2xl font-bold text-white">修改个人信息</h2>
-                            <div className="bg-indigo-800 rounded-full p-2">
+                            <div className="bg-indigo-800 rounded-full p-2" onClick={()=>{navigate('/home')}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
                             </div>
                         </div>

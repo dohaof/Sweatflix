@@ -1,6 +1,7 @@
 import {type JSX, useContext} from "react";
 import logo from '../assets/homelogo.png';
 import {GlobalContext} from "../contexts/userContexts.tsx";
+import { useNavigate } from 'react-router-dom';
 // interface HeaderProps {
 //     onUserClick: () => void;
 //     isLoggedIn: boolean;
@@ -8,10 +9,11 @@ import {GlobalContext} from "../contexts/userContexts.tsx";
 
 export function Header(): JSX.Element {
     const state = useContext(GlobalContext)
+    const navigate = useNavigate();
     return (
         <div className="sticky top-0 z-50 bg-blue-300 h-[8vh] flex items-center w-full rounded">
             {/* 添加内容确保可见性 */}
-            <img src={logo} alt="Logo" className="h-[7vh] rounded-full" />
+            <img src={logo} alt="Logo" className="h-[7vh] rounded-full" onClick={()=>{navigate('/home')}}/>
             <ul className="flex flex-row items-center space-x-6 ml-auto mr-4">
                 <li>
                     <button className={"hover:text-blue-700"}>

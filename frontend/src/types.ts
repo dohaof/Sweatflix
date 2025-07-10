@@ -49,6 +49,7 @@ export interface RegisterForm {
     role:Role
 }
 export interface ModifyForm {
+    id: number;
     username: string;
     newPassword: string;
     oldPassword: string;

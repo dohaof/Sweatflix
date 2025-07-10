@@ -19,7 +19,7 @@ public class MyWebMvcConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/api/*")
+                .excludePathPatterns("/api/**")
                 .excludePathPatterns("/error")
                 .order(1);
     }

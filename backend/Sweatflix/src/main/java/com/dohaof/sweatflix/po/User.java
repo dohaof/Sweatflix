@@ -1,7 +1,10 @@
 package com.dohaof.sweatflix.po;
 
+import com.dohaof.sweatflix.enums.Role;
 import com.dohaof.sweatflix.vo.UserVO;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,19 +14,20 @@ import lombok.Setter;
 @Setter
 public class User {
     @Id
-    public Integer id;
-    public String username;
-    public String phone;
-    public String password;
-    public String image;
-    public String role;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private String username;
+    private String phone;
+    private String password;
+    private String image;
+    private Role role;
     public UserVO toVO(){
         UserVO vo = new UserVO();
-        vo.id = this.id;
-        vo.username = this.username;
-        vo.image = this.image;
-        vo.phone = this.phone;
-        vo.role = this.role;
+        vo.setId(id);
+        vo.setUsername(username);
+        vo.setPhone(phone);
+        vo.setImage(image);
+        vo.setRole(role);
         return vo;
     }
 }

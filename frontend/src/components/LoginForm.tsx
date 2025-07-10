@@ -7,7 +7,6 @@ export function LoginForm(props: { onSubmit: (credentials: Credentials) => void 
         phone: '',
         password: '',
     });
-
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setCredentials({
             ...credentials,
@@ -61,9 +60,13 @@ export function LoginForm(props: { onSubmit: (credentials: Credentials) => void 
                     立即登录
                 </button>
             </div>
-            <p>注:（手机号不存在则自动注册账号）</p>
-            <p>注册后默认为普通用户，前往账号详情更改身份</p>
-
+            <div>
+                <button
+                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium  bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                    前往注册
+                </button>
+            </div>
         </form>
     );
 }

@@ -11,6 +11,14 @@ const Role = {
 } as const;
 
 export type Role = typeof Role[keyof typeof Role];
+
+// const FormType = {
+//     LoginType:"LoginType",
+//     RegisterType:"RegisterType",
+//     ModifyType:"ModifyType",
+// } as const;
+//
+// export type FormType = typeof FormType[keyof typeof FormType];
 // 场地类型
 export interface Venue {
     id: number;
@@ -32,4 +40,17 @@ export interface VenueItem {
 export interface Credentials {
     phone: string;
     password: string;
+}
+export interface RegisterForm {
+    username: string;
+    password: string;
+    phone: string;
+    image: string;
+    role:Role
+}
+export interface ModifyForm {
+    username: string;
+    newPassword: string;
+    oldPassword: string;
+    image: string;
 }

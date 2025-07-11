@@ -14,20 +14,34 @@ export interface User {
 export  type Role = 'norm' | 'admin'
 // 场地类型
 export interface Venue {
+    capacity: ReactNode;
     id: number;
     name: string;
+    description: string;
     image: string;
-    schedule: VenueItem[];
+    price: number;
+
+    schedule: VenueSchedule[];
 }
 
 
 // 场地排程
-export interface VenueItem {
+export interface VenueSchedule {
     id: number;
-    TimeStamp: Date;
-    image: string;
+    venueId: number;
+    startTime: string
+    endTime: string;
     capacity: number;
-    attendees: User[];
+    price: number;
+    autoRenew: boolean;
+    scheduleOrder: ScheduleOrder[];
+}
+export interface ScheduleOrder {
+    id: number;
+    userId: number;
+    venueScheduleId: number;
+    orderId: string;
+    paySuccess: boolean;
 }
 // 登录凭证类型
 export interface Credentials {

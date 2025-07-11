@@ -17,7 +17,7 @@ export function SideBar({isOpen}: {isOpen: boolean}): JSX.Element {
     }
     return (
         <div className={`
-      fixed top-2/25 bottom-1 right-0 w-full md:w-96 shadow-xl z-40 transform transition-transform bg-green-300
+      top-2/25 bottom-0 right-0 w-full md:w-96 shadow-xl z-40 rounded-2xl transform transition-transform bg-green-300 border
       ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
             <div className="p-6 h-full flex flex-col items-center">
                 <div className="flex justify-between items-center mb-6">

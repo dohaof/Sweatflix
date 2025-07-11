@@ -40,6 +40,8 @@ dependencies {
     implementation 'org.xerial:sqlite-jdbc'
     implementation 'org.hibernate.orm:hibernate-community-dialects'  // 明确包含方言
     implementation 'com.aliyun.oss:aliyun-sdk-oss:3.17.4'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

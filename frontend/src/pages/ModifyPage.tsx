@@ -1,23 +1,42 @@
-import React, {useState, useRef, useContext} from 'react';
-import {GlobalContext} from "../contexts/userContexts.tsx";
+import React, {useState, useRef, useContext, useEffect} from 'react';
+import {UserContext} from "../contexts/globalContexts.tsx";
 import {useNavigate} from "react-router-dom";
+import {uploadImageToServer} from "../api/upload.ts";
+import {userModify} from "../api/userApi.ts";
 
 export function ModifyPage() {
     // 模拟当前用户数据（实际应用中应从上下文或API获取）
+
     const navigate = useNavigate();
-    const [currentUser] = useState({
-        username: 'user123',
-        image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80'
-    });
-    const state = useContext(GlobalContext)
+    const state = useContext(UserContext)
     const [formData, setFormData] = useState({
-        username: currentUser.username,
+        id: 0,
+        username: '',
         oldPassword: '',
         newPassword: '',
-        image: currentUser.image
+        image: '',
     });
+    useEffect(() => {
+        if (!state) {
+            console.error("GlobalContext is missing!");
+            return;
+        }
 
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(currentUser.image);
+        if (!state.currentUser) {
+            navigate('/home'); // 在 useEffect 里调用 navigate
+            return;
+        }
+
+        // ✅ 当 currentUser 可用时，更新 formData
+        setFormData({
+            id: state.currentUser.id,
+            username: state.currentUser.username,
+            oldPassword: '',
+            newPassword: '',
+            image: state.currentUser.image ,
+        });
+    }, [state, navigate]);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(state!.currentUser!.image);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [successMessage, setSuccessMessage] = useState('');
@@ -39,18 +58,34 @@ export function ModifyPage() {
     };
 
     // 处理头像上传
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // const file = e.target.files?.[0];
-        // if (file) {
-        //     // 客户端预览
-        //     const reader = new FileReader();
-        //     reader.onloadend = () => {
-        //         const previewUrl = reader.result as string;
-        //         setAvatarPreview(previewUrl);
-        //         setFormData(prev => ({ ...prev, image: previewUrl }));
-        //     };
-        //     reader.readAsDataURL(file);
-        // }
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // 客户端预览
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setAvatarPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+
+        try {
+            // 上传到服务器
+            const imageUrl = await uploadImageToServer(file);
+
+            // 保存服务器返回的URL
+            setFormData(prev => ({
+                ...prev,
+                image: imageUrl
+            }));
+        } catch (error) {
+            // 上传失败时清除预览
+            setAvatarPreview(null);
+            setFormData(prev => ({...prev, image: ""}));
+            window.alert("图片上传失败，请重试！");
+            console.error("上传错误详情:", error);
+        }
     };
 
     // 验证表单
@@ -80,25 +115,21 @@ export function ModifyPage() {
         e.preventDefault();
 
         if (!validateForm()) return;
-        //
-        // setIsSubmitting(true);
-        // setSuccessMessage('');
-        //
-        // try {
-        //     // 模拟API请求
-        //     await new Promise(resolve => setTimeout(resolve, 1500));
-        //
-        //     // 实际项目中应调用更新用户信息的API
-        //     // const response = await axios.put('/api/user/profile', formData);
-        //
-        //     console.log('更新数据:', formData);
-        //     setSuccessMessage('用户信息更新成功！');
-        // } catch (error) {
-        //     console.error('更新失败:', error);
-        //     setErrors({ form: '更新失败，请重试' });
-        // } finally {
-        //     setIsSubmitting(false);
-        // }
+
+        setIsSubmitting(true);
+        setSuccessMessage('');
+
+        try {
+            const responseData = await userModify(formData,localStorage.getItem("authToken") as string);
+
+            console.log('更新数据:', formData);
+            setSuccessMessage(responseData);
+        } catch (error) {
+            console.error('更新失败:', error);
+            setErrors({ form: `更新失败，${error}` });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -259,7 +290,7 @@ export function ModifyPage() {
                     </svg>
                     保存中...
                   </span>
-                                ) : '保存更改'}
+                                ) : <div className='text-black'>保存更改</div>}
                             </button>
 
                             <button
@@ -267,12 +298,13 @@ export function ModifyPage() {
                                 className="flex-1 py-3 px-4 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition"
                                 onClick={() => {
                                     setFormData({
-                                        username: currentUser.username,
+                                        id:state!.currentUser!.id,
+                                        username: state!.currentUser!.username,
                                         oldPassword: '',
                                         newPassword: '',
-                                        image: currentUser.image
+                                        image: state!.currentUser!.username,
                                     });
-                                    setAvatarPreview(currentUser.image);
+                                    setAvatarPreview(state!.currentUser!.image);
                                     setErrors({});
                                 }}
                             >

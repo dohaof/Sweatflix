@@ -1,13 +1,17 @@
 import type {Credentials} from "../types.ts";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import * as React from "react";
 import {useNavigate} from "react-router-dom";
-export function LoginForm(props: { onSubmit: (credentials: Credentials) => void }) {
+import {userLogin} from "../api/userApi.ts";
+import { UserContext} from "../contexts/globalContexts.tsx";
+export function LoginForm() {
     const navigate = useNavigate();
+    const state = useContext(UserContext);
+    console.log(state);
     const [credentials, setCredentials] = useState({
         phone: '',
         password: '',
-    });
+    } as Credentials);
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setCredentials({
             ...credentials,
@@ -15,9 +19,23 @@ export function LoginForm(props: { onSubmit: (credentials: Credentials) => void 
         });
     };
 
-    const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit =async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        props.onSubmit(credentials);
+        try {
+            // 调用API
+            const  responseData=await userLogin(credentials);
+            console.log(responseData)
+            localStorage.setItem("authToken", responseData.token);
+            if(!state){
+                throw new Error("StaTe Is nUlL??")
+            }
+            state.setCurrentUser(responseData.userVO);
+            state.setIsLoggedIn(true);
+            alert('登录成功！');
+        } catch (error) {
+            console.error('登录失败:', error);
+            alert('登录失败，请重试');
+        }
     };
 
     return (

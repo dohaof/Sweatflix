@@ -1,6 +1,6 @@
 import {type JSX, useContext} from "react";
 import logo from '../assets/homelogo.png';
-import {GlobalContext} from "../contexts/userContexts.tsx";
+import {HomeContext} from "../contexts/globalContexts.tsx";
 import { useNavigate } from 'react-router-dom';
 // interface HeaderProps {
 //     onUserClick: () => void;
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 // }
 
 export function Header(): JSX.Element {
-    const state = useContext(GlobalContext)
+    const state = useContext(HomeContext)
     const navigate = useNavigate();
     return (
         <div className="sticky top-0 z-50 bg-blue-300 h-[8vh] flex items-center w-full rounded">

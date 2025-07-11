@@ -1,26 +1,19 @@
 import {type JSX, useContext} from "react";
-import {GlobalContext} from "../contexts/userContexts.tsx";
-import type {Credentials} from "../types.ts";
+import {UserContext} from "../contexts/globalContexts.tsx";
 import {LoginForm} from "./LoginForm.tsx";
+import {useNavigate} from "react-router-dom";
 
 
 export function SideBar({isOpen}: {isOpen: boolean}): JSX.Element {
-    const state = useContext(GlobalContext)
-    // const navigate = useNavigate();
-    const handleLogin = (credentials:Credentials) => {
-        // 实际项目中这里会有API调用
-        console.log('登录请求:', credentials);
-
-        // 模拟登录成功
-
-    };
-    const renderIfNorm=(e:string)=>{
+    const state = useContext(UserContext);
+    const navigate = useNavigate();
+    const renderIfNorm=(e:string,f:()=>void)=>{
         if (state==null||state.currentUser==null||state.currentUser.role=="admin"){return null;}
-        return  <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition">{e}</button></li>
+        return  <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition" onClick={f}>{e}</button></li>
     }
-    const renderIfAdmin=(e:string)=>{
+    const renderIfAdmin=(e:string,f:()=>void)=>{
         if (state==null||state.currentUser==null||state.currentUser.role=="norm"){return null;}
-        return  <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition">{e}</button></li>
+        return  <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition" onClick={f}>{e}</button></li>
     }
     return (
         <div className={`
@@ -36,27 +29,42 @@ export function SideBar({isOpen}: {isOpen: boolean}): JSX.Element {
                     {state!=null&&state.isLoggedIn && state.currentUser!=null? (
                         <div className="space-y-6">
                             <div className="flex items-center space-x-4">
-                                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-[12vw] aspect-square" />
+                                <div className="border-2 border-dashed rounded-xl w-[12vw] aspect-square overflow-hidden">
+                                    {state.currentUser.image ? (
+                                        <img
+                                            src={state.currentUser.image}
+                                            alt="用户头像"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex items-center justify-center bg-gray-200 w-full h-full">没有头像</div>
+                                    )}
+                                </div>
                                 <div>
-                                    <h3 className="text-xl font-bold">{state.currentUser.username}</h3>
-                                    <p className="text-gray-600">{state.currentUser.phone}</p>
-                                    <p className="text-gray-600">{state.currentUser.role}</p>
+                                    <h3 className="text-xl text-amber-950 font-bold">用户名: {state.currentUser.username}</h3>
+                                    <p className="text-gray-600">手机号: {state.currentUser.phone}</p>
+                                    <p className="text-gray-600">{state.currentUser.role=='admin'?'管理员':"普通用户"}</p>
                                 </div>
                             </div>
 
                             <div>
-                                <h4 className="font-semibold mb-3">账户设置</h4>
+                                <h4 className="font-semibold mb-3 text-black">账户设置</h4>
                                 <ul className="space-y-2">
-                                    <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition">账号信息修改</button></li>
-                                    {renderIfNorm("预约历史")}
-                                    {renderIfAdmin("增加场地")}
-                                    {renderIfNorm("通知设置")}
-                                    <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition">退出登录</button></li>
+                                    <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition" onClick={()=>{
+                                        navigate('/user/modify');
+                                    }}>账号信息修改</button></li>
+                                    {renderIfNorm("预约历史",()=>{console.log("tobe done")})}
+                                    {renderIfAdmin("增加场地",()=>{console.log("tobe done")})}
+                                    {renderIfNorm("通知设置",()=>{console.log("tobe done")})}
+                                    <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition" onClick={()=>{
+                                        state?.setCurrentUser(null)
+                                        state?.setIsLoggedIn(false);
+                                    }}>退出登录</button></li>
                                 </ul>
                             </div>
                         </div>
                     ) : (
-                        <LoginForm onSubmit={handleLogin} />
+                        <LoginForm/>
                     )}
                 </div>
             </div>

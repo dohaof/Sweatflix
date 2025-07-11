@@ -1,5 +1,6 @@
 package com.dohaof.sweatflix.service.serviceImpl;
 
+import com.dohaof.sweatflix.dto.LoginResponseDTO;
 import com.dohaof.sweatflix.dto.ModifyDTO;
 import com.dohaof.sweatflix.dto.RegisterDTO;
 import com.dohaof.sweatflix.exception.SFException;
@@ -19,12 +20,12 @@ public class UserServiceImpl implements UserService {
     private final TokenUtil tokenUtil;
     private final PasswordEncoder passwordEncoder;
     @Override
-    public String login(String phone, String password) {
+    public LoginResponseDTO login(String phone, String password) {
         User user = userRepository.findByPhone(phone);
         if (user == null|| !passwordEncoder.matches(password, user.getPassword())) {
             throw new SFException("409","手机号不已存在/密码错误");
         }
-        return tokenUtil.generateToken(user);
+        return new LoginResponseDTO(tokenUtil.generateToken(user),user.toVO());
     }
 
     @Override

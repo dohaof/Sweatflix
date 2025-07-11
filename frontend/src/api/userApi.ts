@@ -1,4 +1,4 @@
-import type {RegisterForm} from "../types.ts";
+import type {Credentials, ModifyForm, RegisterForm} from "../types.ts";
 
 export async function userRegister(e:RegisterForm){
 
@@ -13,17 +13,74 @@ export async function userRegister(e:RegisterForm){
         });
 
         if (!response.ok) {
-            throw new Error(`注册失败: ${response.status}`);
+            throw new Error(`注册api失败: ${response.status}`);
         }
 
         const result = await response.json();
         if (result.code == 200) {
             return result.data; // “注册成功”
         } else {
-            throw new Error(result.message || ("注册失败"+response.status));
+            throw new Error(result.message || ("注册api失败"+response.status));
         }
     } catch (error) {
-        console.error("注册错误:", error);
+        console.error("注册api错误:", error);
+        throw error;
+    }
+
+}
+export async function userLogin(e:Credentials){
+
+    try {
+        const response = await fetch("/api/users/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(e),
+            // headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+            throw new Error(`登录api失败(not ok): ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.code == 200) {
+            return result.data; // “token&user”
+        } else {
+            throw new Error(result.message || `登录api失败: ${response.status}`);
+        }
+    } catch (error) {
+        console.error("登录api错误:", error);
+        throw error;
+    }
+
+}
+
+export async function userModify(e:ModifyForm,token:string){
+
+    try {
+        const response = await fetch("/api/users", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(e),
+        });
+
+        if (!response.ok) {
+            throw new Error(`修改用户api失败: ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.code == 200) {
+            return result.data; // “修改成功”
+        } else {
+            throw new Error(result.message || ("修改用户api失败:"+result.msg));
+        }
+    } catch (error) {
+        console.error("修改用户api错误:", error);
         throw error;
     }
 

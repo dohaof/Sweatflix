@@ -83,10 +83,11 @@ export function RegisterPage() {
 
         try {
             // 调用注册API
-            const response = await userRegister(formData)
+            const responseData = await userRegister(formData)
 
-            console.log('注册成功:', response.data);
+            console.log('注册成功:', responseData);
             alert('注册成功！');
+            navigate('/home');
         } catch (error) {
             console.error('注册失败:', error);
             alert('注册失败，请重试');

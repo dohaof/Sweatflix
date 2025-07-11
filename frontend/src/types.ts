@@ -5,20 +5,13 @@ export interface User {
     image: string;
     role:Role
 }
-const Role = {
-    admin: 'admin',
-    norm: 'norm'
-} as const;
-
-export type Role = typeof Role[keyof typeof Role];
-
-// const FormType = {
-//     LoginType:"LoginType",
-//     RegisterType:"RegisterType",
-//     ModifyType:"ModifyType",
+// const Role = {
+//     admin: 'admin',
+//     norm: 'norm'
 // } as const;
 //
-// export type FormType = typeof FormType[keyof typeof FormType];
+// export type Role = typeof Role[keyof typeof Role];
+export  type Role = 'norm' | 'admin'
 // 场地类型
 export interface Venue {
     id: number;

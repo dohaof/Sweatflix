@@ -1,6 +1,9 @@
 import {useRef, useState} from "react";
 import * as React from "react";
 import {useNavigate} from "react-router-dom";
+import {uploadImageToServer} from "../api/upload.ts";
+import {userRegister} from "../api/userApi.ts";
+import type {Role} from "../types.ts";
 export function RegisterPage() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -8,7 +11,7 @@ export function RegisterPage() {
         password: '',
         phone: '',
         image: '',
-        role: 'norm'
+        role: 'norm' as Role,
     });
 
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -42,48 +45,54 @@ export function RegisterPage() {
         }
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return Object.keys(newErrors).length == 0;
     };
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            // 客户端预览
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setAvatarPreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+        if (!file) return;
 
-            // 实际项目中这里应上传到服务器
-            // uploadImage(file).then(url => {
-            //   setFormData(prev => ({ ...prev, image: url }));
-            // });
+        // 客户端预览
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setAvatarPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
 
-            // 暂时使用客户端预览URL
-            setFormData(prev => ({ ...prev, image: URL.createObjectURL(file) }));
+        try {
+            // 上传到服务器
+            const imageUrl = await uploadImageToServer(file);
+
+            // 保存服务器返回的URL
+            setFormData(prev => ({
+                ...prev,
+                image: imageUrl
+            }));
+        } catch (error) {
+            // 上传失败时清除预览
+            setAvatarPreview(null);
+            setFormData(prev => ({...prev, image: ""}));
+            window.alert("图片上传失败，请重试！");
+            console.error("上传错误详情:", error);
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
-        // setIsSubmitting(true);
+        setIsSubmitting(true);
 
-        // try {
-        //     // 实际项目中这里应调用注册API
-        //     const response = await axios.post('/api/register', {
-        //         ...formData,
-        //         id: Date.now() // 模拟ID生成
-        //     });
-        //
-        //     console.log('注册成功:', response.data);
-        //     alert('注册成功！');
-        // } catch (error) {
-        //     console.error('注册失败:', error);
-        //     alert('注册失败，请重试');
-        // } finally {
-        //     setIsSubmitting(false);
-        // }
+        try {
+            // 调用注册API
+            const response = await userRegister(formData)
+
+            console.log('注册成功:', response.data);
+            alert('注册成功！');
+        } catch (error) {
+            console.error('注册失败:', error);
+            alert('注册失败，请重试');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (

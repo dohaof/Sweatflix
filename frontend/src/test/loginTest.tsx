@@ -2,11 +2,11 @@
 // import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 // import {LoginForm} from '../components/LoginForm'
 // import { UserContext } from '../contexts/globalContexts.tsx'
-// import { userLogin } from '../api/userApi.ts'
+// import { userLogin } from '../api/userAPI.ts'
 // import { MemoryRouter } from 'react-router-dom'
 //
 // // 模拟API和上下文
-// vi.mock('../api/userApi.ts')
+// vi.mock('../api/userAPI.ts')
 // vi.mock('react-router-dom', async () => {
 //     const actual = await vi.importActual('react-router-dom')
 //     return {

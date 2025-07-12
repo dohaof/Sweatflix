@@ -2,7 +2,7 @@ import React, {useState, useRef, useContext, useEffect} from 'react';
 import {UserContext} from "../contexts/globalContexts.tsx";
 import {useNavigate} from "react-router-dom";
 import {uploadImageToServer} from "../api/upload.ts";
-import {userModify} from "../api/userApi.ts";
+import {userModify} from "../api/userAPI.ts";
 
 export function ModifyPage() {
     // 模拟当前用户数据（实际应用中应从上下文或API获取）
@@ -16,9 +16,15 @@ export function ModifyPage() {
         newPassword: '',
         image: '',
     });
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [successMessage, setSuccessMessage] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
         if (!state) {
             console.error("GlobalContext is missing!");
+            window.alert("GlobalContext is missing!")
             return;
         }
 
@@ -35,13 +41,8 @@ export function ModifyPage() {
             newPassword: '',
             image: state.currentUser.image ,
         });
+        setAvatarPreview(state.currentUser.image);
     }, [state, navigate]);
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(state!.currentUser!.image);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [successMessage, setSuccessMessage] = useState('');
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
     // 处理表单字段变化
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

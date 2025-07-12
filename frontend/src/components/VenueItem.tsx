@@ -16,14 +16,13 @@ const VenueItem: React.FC<VenueItemProps> = ({ venue, onClick }) => {
     <div className="p-4">
     <div className="flex justify-between items-start">
     <h3 className="text-xl font-bold text-gray-800">{venue.name}</h3>
-        <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-        {venue.name}
-        </span>
+            <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+        {venue?.scheduleId?.length>0?'有预约项':'无预约项'}
+            </span>
         </div>
         <div className="mt-2 flex items-center text-gray-600">
-    <span className="material-icons mr-1 text-sm">group</span>
-        <span>容量: {venue.capacity}人</span>
-    </div>
+            <span>描述: {venue.description}</span>
+        </div>
     <button className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition">
         查看详情
         </button>

@@ -24,6 +24,7 @@ public class Comments {
     private Integer rate;
     private String image;
     private LocalDateTime createdAt;
+    private Integer thumbUpCount;
     public CommentsVO toVO() {
         CommentsVO vo = new CommentsVO();
         vo.setId(id);
@@ -32,6 +33,7 @@ public class Comments {
         vo.setRate(rate);
         vo.setCreatedAt(createdAt);
         vo.setImage(image);
+        vo.setThumbUpCount(thumbUpCount);
         return vo;
     }
 }

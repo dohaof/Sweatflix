@@ -2,7 +2,7 @@ import type {Credentials} from "../types.ts";
 import {useContext, useState} from "react";
 import * as React from "react";
 import {useNavigate} from "react-router-dom";
-import {userLogin} from "../api/userApi.ts";
+import {userLogin} from "../api/userAPI.ts";
 import { UserContext} from "../contexts/globalContexts.tsx";
 export function LoginForm() {
     const navigate = useNavigate();

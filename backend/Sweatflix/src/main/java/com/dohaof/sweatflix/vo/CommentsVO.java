@@ -22,4 +22,5 @@ public class CommentsVO {
     private Integer rate;
     private String image;
     private LocalDateTime createdAt;
+    private Integer thumbUpCount;
 }

@@ -52,11 +52,11 @@ jobs:
       
     - name: Build with Gradle
       working-directory: ./backend
-      run: ./gradlew build -x test  # -x test 表示跳过测试阶段
+      run: ./backend/gradlew build -x test  # -x test 表示跳过测试阶段
       
     - name: Run tests
       working-directory: ./backend
-      run: ./gradlew test
+      run: ./backend/gradlew test
 
 # jobs:
 #   build:

@@ -1,11 +1,12 @@
 import {type JSX, useContext} from "react";
-import {UserContext} from "../contexts/globalContexts.tsx";
+import {HomeContext, UserContext} from "../contexts/globalContexts.tsx";
 import {LoginForm} from "./LoginForm.tsx";
 import {useNavigate} from "react-router-dom";
 
 
-export function SideBar({isOpen}: {isOpen: boolean}): JSX.Element {
+export function SideBar(): JSX.Element {
     const state = useContext(UserContext);
+    const homeState=useContext(HomeContext);
     const navigate = useNavigate();
     const renderIfNorm=(e:string,f:()=>void)=>{
         if (state==null||state.currentUser==null||state.currentUser.role=="admin"){return null;}
@@ -17,8 +18,8 @@ export function SideBar({isOpen}: {isOpen: boolean}): JSX.Element {
     }
     return (
         <div className={`
-      fixed  top-2/25 bottom-0 right-0 w-full md:w-[24vw] shadow-xl z-40 rounded-2xl transform transition-transform bg-green-300 border
-      ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      fixed top-2/25 bottom-0 right-0 w-full md:w-[24vw] shadow-xl z-40 rounded-2xl transform transition-transform bg-green-300 border
+      ${homeState?.isSideBarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
             <div className="p-6 h-full flex flex-col items-center">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">

@@ -32,7 +32,7 @@ const [currentUser, setCurrentUser] = useState<User | null>(null);
                 <Route path="/user/register" element={<RegisterPage/>}/>
                 <Route path="/user/modify" element={<ModifyPage/>}/>
                 <Route path="/venue_detail/:venue_id" element={<VenueDetail />} />
-                <Route path="/notification" element={<NotificationPage />} />
+                <Route path="/notification/:user_id" element={<NotificationPage />} />
             </Routes>
         </BrowserRouter>
         </UserContext.Provider>

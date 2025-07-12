@@ -97,7 +97,7 @@ export function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center w-[100vw] p-4">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center w-screen p-4">
             <div className="w-[100vw] max-w-md">
                 <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                     <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
@@ -229,7 +229,7 @@ export function RegisterPage() {
                                         : 'bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
                                 }`}
                             >
-                                {isSubmitting ? '注册中...' : '注册账户'}
+                                {isSubmitting ? <div className='text-black'>注册中... </div>: <div className='text-black'>注册账户</div>}
                             </button>
                         </div>
                     </form>

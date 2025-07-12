@@ -1,7 +1,10 @@
 import VenueItem from './VenueItem';
 import type { Venue } from '../types';
+import {useContext} from "react";
+import {HomeContext} from "../contexts/globalContexts.tsx";
 
 const VenueList = () => {
+    const state = useContext(HomeContext)
     const venues: Venue[] = [
         { id: 1, name: "篮球场" } as Venue,
         { id: 2, name: "篮球场" } as Venue,
@@ -18,8 +21,8 @@ const VenueList = () => {
     ];
 
     return (
-        <div className="flex-1 overflow-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-0">
+        <div className={`p-4 overflow-auto ${state?.isSideBarOpen ? 'w-3/4' :'w-full'}`}>
+            <div className={`grid grid-cols-1 ${state?.isSideBarOpen? 'md:grid-cols-3': 'md:grid-cols-4'} gap-6 p-0`}>
                 {venues.map((venue) => (
                     <VenueItem
                         key={venue.id}

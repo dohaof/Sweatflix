@@ -9,11 +9,6 @@ vi.mock('../api/userAPI.ts')
 vi.mock('../api/upload.ts', () => ({
     uploadImageToServer: vi.fn()
 }))
-
-vi.mock('../api/userAPI.ts', () => ({
-    userRegister: vi.fn()
-}))
-
 vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom')
     return {

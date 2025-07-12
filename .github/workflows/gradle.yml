@@ -50,16 +50,16 @@ jobs:
         distribution: 'temurin'
       
     - name: Grant execute permission for Gradle wrapper
-      working-directory: ./backend
-      run: chmod +x ./Sweatflix/gradlew
+      working-directory: ./backend/Sweatflix
+      run: chmod +x ./gradlew
       
     - name: Build with Gradle
-      working-directory: ./backend
-      run: ./Sweatflix/gradlew build -x test  # -x test 表示跳过测试阶段
+      working-directory: ./backend/Sweatflix
+      run: ./gradlew build -x test  # -x test 表示跳过测试阶段
       
     - name: Run tests
-      working-directory: ./backend
-      run: ./Sweatflix/gradlew test
+      working-directory: ./backend/Sweatflix
+      run: ./gradlew test
 
 # jobs:
 #   build:

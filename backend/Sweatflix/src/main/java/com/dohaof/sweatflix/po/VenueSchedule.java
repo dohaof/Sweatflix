@@ -32,8 +32,8 @@ public class VenueSchedule {
     @Column
     private Boolean autoRenew;
     // 关联到具体的订单
-    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ScheduleOrder> order;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ScheduleOrder> scheduleOrder;
     public VenueScheduleVO toVenueScheduleVO() {
         VenueScheduleVO vo = new VenueScheduleVO();
         vo.setId(id);
@@ -43,7 +43,7 @@ public class VenueSchedule {
         vo.setCapacity(capacity);
         vo.setPrice(price);
         vo.setAutoRenew(autoRenew);
-        vo.setSchedulesId(order.stream().map(ScheduleOrder::getId).collect(Collectors.toList()));
+        vo.setScheduleOrdersId(scheduleOrder.stream().map(ScheduleOrder::getId).collect(Collectors.toList()));
         return vo;
     }
 }

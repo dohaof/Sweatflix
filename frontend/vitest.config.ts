@@ -1,12 +1,14 @@
 import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
+    plugins: [react()],
     test: {
-        // 测试环境配置
-        environment: 'jsdom', // 或 'happy-dom' 用于DOM测试
-        globals: true, // 启用全局API
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './src/setupTests.ts', // 确保路径正确
         coverage: {
-            provider: 'istanbul' // 或 'c8'
+            provider: 'istanbul'
         }
     }
 })

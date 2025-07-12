@@ -20,5 +20,5 @@ public class VenueScheduleVO {
     private Integer capacity;
     private Double price;
     private Boolean autoRenew;
-    private List<Integer> schedulesId;
+    private List<Integer> scheduleOrdersId;
 }

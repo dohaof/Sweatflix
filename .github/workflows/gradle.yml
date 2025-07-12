@@ -15,7 +15,8 @@ on:
 
 jobs:
   frontend:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
     
@@ -28,17 +29,17 @@ jobs:
       working-directory: ./frontend
       run: npm install
       
-    # - name: Run tests
-    #   working-directory: ./frontend
-    #   run: npm test
+    - name: Run tests
+      working-directory: ./frontend
+      run: npm test
       
-    # - name: Build project
-    #   working-directory: ./frontend
-    #   run: npm run build
+    - name: Build project
+      working-directory: ./frontend
+      run: npm run build
       
   backend:
-    runs-on: windows-latest
-    # needs: frontend
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
     
@@ -47,14 +48,18 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
-        
-    - name: Build
+      
+    - name: Grant execute permission for Gradle wrapper
       working-directory: ./backend
-      run: mvn -B package --file build.gradle
+      run: chmod +x gradlew
+      
+    - name: Build with Gradle
+      working-directory: ./backend
+      run: ./gradlew build -x test  # -x test 表示跳过测试阶段
       
     - name: Run tests
       working-directory: ./backend
-      run: mvn test
+      run: ./gradlew test
 
 # jobs:
 #   build:

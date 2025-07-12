@@ -39,7 +39,7 @@ export function LoginForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" data-testid="login-form">
             <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
                     手机号

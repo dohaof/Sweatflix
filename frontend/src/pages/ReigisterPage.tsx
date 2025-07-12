@@ -104,7 +104,7 @@ export function RegisterPage() {
                         <h2 className="text-2xl font-bold text-white text-center">创建新账户</h2>
                     </div>
 
-                    <form className="p-6 space-y-4" onSubmit={handleSubmit}>
+                    <form className="p-6 space-y-4" onSubmit={handleSubmit} data-testid="register-form">
                         {/* 头像上传 */}
                         <div className="flex flex-col items-center">
                             <div

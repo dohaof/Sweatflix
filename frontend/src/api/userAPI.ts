@@ -3,7 +3,7 @@ import type {Credentials, ModifyForm, RegisterForm} from "../types.ts";
 export async function userRegister(e:RegisterForm){
 
     try {
-        const response = await fetch("/api/users", {
+        const response = await fetch("/api/users/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -11,7 +11,7 @@ export async function userRegister(e:RegisterForm){
             body: JSON.stringify(e),
             // headers: { Authorization: `Bearer ${token}` }
         });
-
+        console.log(response);
         if (!response.ok) {
             throw new Error(`注册api失败: ${response.status}`);
         }
@@ -20,7 +20,7 @@ export async function userRegister(e:RegisterForm){
         if (result.code == 200) {
             return result.data; // “注册成功”
         } else {
-            throw new Error(result.message || ("注册api失败"+response.status));
+            throw new Error(result.msg || ("注册api失败"+response.status));
         }
     } catch (error) {
         console.error("注册api错误:", error);
@@ -48,7 +48,7 @@ export async function userLogin(e:Credentials){
         if (result.code == 200) {
             return result.data; // “token&user”
         } else {
-            throw new Error(result.message || `登录api失败: ${response.status}`);
+            throw new Error(result.msg || `登录api失败: ${response.status}`);
         }
     } catch (error) {
         console.error("登录api错误:", error);
@@ -77,7 +77,7 @@ export async function userModify(e:ModifyForm,token:string){
         if (result.code == 200) {
             return result.data; // “修改成功”
         } else {
-            throw new Error(result.message || ("修改用户api失败:"+result.msg));
+            throw new Error(result.msg || ("修改用户api失败:"+result.msg));
         }
     } catch (error) {
         console.error("修改用户api错误:", error);

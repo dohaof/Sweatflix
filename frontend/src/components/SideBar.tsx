@@ -55,7 +55,7 @@ export function SideBar(): JSX.Element {
                                         navigate('/user/modify');
                                     }}>账号信息修改</button></li>
                                     {renderIfNorm("预约历史",()=>{console.log("tobe done")})}
-                                    {renderIfAdmin("增加场地",()=>{console.log("tobe done")})}
+                                    {renderIfAdmin("增加场地",()=>{navigate('/venue/create')})}
                                     {renderIfNorm("通知设置",()=>{console.log("tobe done")})}
                                     <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition" onClick={()=>{
                                         state?.setCurrentUser(null)

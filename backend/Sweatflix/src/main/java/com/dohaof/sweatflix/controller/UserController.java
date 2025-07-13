@@ -29,7 +29,7 @@ public class UserController {
         /**
          * 创建新的用户
          */
-        @PostMapping("")
+        @PostMapping("/register")
         public Response<String> register(@RequestBody RegisterDTO registerDTO) {
             return Response.buildSuccess(userService.register(registerDTO));
         }

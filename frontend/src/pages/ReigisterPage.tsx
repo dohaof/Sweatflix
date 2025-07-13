@@ -90,7 +90,7 @@ export function RegisterPage() {
             navigate('/home');
         } catch (error) {
             console.error('注册失败:', error);
-            alert('注册失败，请重试');
+            alert('注册失败，请重试,'+error);
         } finally {
             setIsSubmitting(false);
         }

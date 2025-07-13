@@ -35,7 +35,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             }
         }
         System.out.println("拦截路径:"+request.getRequestURI());
-        throw new SFException("路径拦截","401");
+        throw new SFException("401","拦截路径");
     }
 
 }

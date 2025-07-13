@@ -34,7 +34,7 @@ export function LoginForm() {
             alert('登录成功！');
         } catch (error) {
             console.error('登录失败:', error);
-            alert('登录失败，请重试');
+            alert(`登录失败，请重试,${error}`);
         }
     };
 

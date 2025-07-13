@@ -84,14 +84,10 @@ export function VenueCreate() {
         setIsSubmitting(true);
         try {
             // 创建场馆数据（包含空scheduleId数组）
-            const venueData = {
-                ...formData,
-                scheduleId: []
-            };
 
-            await createVenue(venueData,localStorage.getItem("authToken") as string);
+            await createVenue(formData,localStorage.getItem("authToken") as string);
             setSuccessMessage('场馆创建成功！');
-            setTimeout(() => navigate('/venues'), 1500); // 成功后跳转
+            setTimeout(() => navigate('/home'), 1500); // 成功后跳转
         } catch (error) {
             setErrors({ form: `创建失败: ${error}` });
         } finally {

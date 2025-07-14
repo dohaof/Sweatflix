@@ -27,7 +27,6 @@ export function ModifyPage() {
             window.alert("GlobalContext is missing!")
             return;
         }
-
         if (!state.currentUser) {
             navigate('/home'); // 在 useEffect 里调用 navigate
             return;

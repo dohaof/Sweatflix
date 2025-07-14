@@ -4,6 +4,8 @@ import com.dohaof.sweatflix.vo.ScheduleOrderVO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +18,8 @@ public class ScheduleOrder {
     private Integer id;
     @OneToOne
     private User user;
-    @OneToOne
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private VenueSchedule venueSchedule;
     private LocalDateTime orderTime;
     private Boolean paySuccess;

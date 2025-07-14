@@ -39,6 +39,12 @@ export interface Venue {
     image: string;
     scheduleId: number[];
 }
+export interface VenueChange {
+    id: number;
+    name: string;
+    description: string;
+    image: string;
+}
 export interface VenueCreation {
     name: string;
     description: string;

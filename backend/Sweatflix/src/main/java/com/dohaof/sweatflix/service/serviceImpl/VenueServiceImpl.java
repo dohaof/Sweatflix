@@ -1,5 +1,6 @@
 package com.dohaof.sweatflix.service.serviceImpl;
 
+import com.dohaof.sweatflix.dto.ModifyVenueDTO;
 import com.dohaof.sweatflix.exception.SFException;
 import com.dohaof.sweatflix.po.Venue;
 import com.dohaof.sweatflix.repository.VenueRepository;
@@ -22,16 +23,16 @@ public class VenueServiceImpl implements VenueService {
     }
 
     @Override
-    public String changeVenue(VenueVO venueVO) {
-        Venue venue=venueRepository.findById(venueVO.getId()).orElseThrow(()->new SFException( "409","场地不存在"));
-        if(venueVO.getName()==null || venueVO.getName().isEmpty()){
-            venue.setName( venueVO.getName() );
+    public String changeVenue(ModifyVenueDTO modifyVenueDTO) {
+        Venue venue=venueRepository.findById(modifyVenueDTO.getId()).orElseThrow(()->new SFException( "409","场地不存在"));
+        if(modifyVenueDTO.getName()!=null && !modifyVenueDTO.getName().isEmpty()){
+            venue.setName( modifyVenueDTO.getName() );
         }
-        if(venueVO.getDescription()==null || venueVO.getDescription().isEmpty()){
-            venue.setDescription( venueVO.getDescription() );
+        if(modifyVenueDTO.getDescription()!=null && !modifyVenueDTO.getDescription().isEmpty()){
+            venue.setDescription( modifyVenueDTO.getDescription() );
         }
-        if(venueVO.getImage()==null || venueVO.getImage().isEmpty()){
-            venue.setImage( venueVO.getImage() );
+        if(modifyVenueDTO.getImage()!=null && !modifyVenueDTO.getImage().isEmpty()){
+            venue.setImage( modifyVenueDTO.getImage() );
         }
         venueRepository.save(venue);
 
@@ -48,5 +49,10 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public List<VenueVO> getAllVenue() {
         return venueRepository.findAll().stream().map(Venue::toVO).collect(Collectors.toList());
+    }
+
+    @Override
+    public VenueVO getVenueById(Integer venueId) {
+        return venueRepository.findById(venueId).orElseThrow(()->new SFException( "409","场地不存在")).toVO();
     }
 }

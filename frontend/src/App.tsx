@@ -6,7 +6,7 @@ import {ModifyPage} from "./pages/ModifyPage.tsx";
 import {UserContext} from "./contexts/globalContexts.tsx";
 import {useState} from "react";
 import type {User} from "./types.ts";
-import {VenueCreate} from "./pages/VenueCreate.tsx";
+import {VenueCreateOrModify} from "./pages/VenueCreateOrModify.tsx";
 import {VenueDetail} from "./pages/VenueDetail.tsx";
 
 
@@ -14,6 +14,7 @@ import {VenueDetail} from "./pages/VenueDetail.tsx";
 function NotificationPage() {
     return null;
 }
+
 
 
 
@@ -29,8 +30,8 @@ const [currentUser, setCurrentUser] = useState<User | null>(null);
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/user/register" element={<RegisterPage/>}/>
                 <Route path="/user/modify" element={<ModifyPage/>}/>
-                <Route path="/venue/create" element={<VenueCreate/>}/>
-                <Route path="/venue_detail/:venue_id" element={<VenueDetail />} />
+                <Route path="/venue/create/:venue_id?" element={<VenueCreateOrModify/>}/>
+                <Route path="/venue/:venue_id" element={<VenueDetail />} />
                 <Route path="/notification/:user_id" element={<NotificationPage />} />
             </Routes>
         </BrowserRouter>

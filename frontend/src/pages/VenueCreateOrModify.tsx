@@ -1,11 +1,12 @@
 import React, {useState, useRef, useEffect, useContext} from 'react';
-import { useNavigate } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { uploadImageToServer } from "../api/upload";
-import { createVenue } from "../api/venueAPI";
+import {changeVenue, createVenue, getVenueById} from "../api/venueAPI";
 import type {VenueCreation} from "../types.ts";
 import {UserContext} from "../contexts/globalContexts.tsx"; // 假设存在创建场馆的API
 
-export function VenueCreate() {
+export function VenueCreateOrModify() {
+    const { venue_id } = useParams<{ venue_id: string }>();
     const navigate = useNavigate();
     const state=useContext(UserContext)
     const [formData, setFormData] = useState<VenueCreation>({
@@ -13,7 +14,7 @@ export function VenueCreate() {
         description: '',
         image: ''
     });
-
+    const isCreating=!venue_id;
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -31,12 +32,26 @@ export function VenueCreate() {
         }
     };
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem('authToken') as string;
+
+                // 获取场馆详情
+                const venueData = await getVenueById(parseInt(venue_id as string),token);
+                setFormData(venueData);
+                setImagePreview(venueData?.image);
+            } catch (err) {
+                window.alert(err);
+            }
+        };
         if (!state) {
             console.error("GlobalContext is missing!");
             window.alert("GlobalContext is missing!")
             return;
         }
 
+        if(!isCreating) {fetchData()
+        }
         if (!state.currentUser) {
             navigate('/home'); // 在 useEffect 里调用 navigate
             return;
@@ -82,14 +97,24 @@ export function VenueCreate() {
         if (!validateForm()) return;
 
         setIsSubmitting(true);
-        try {
-            // 创建场馆数据（包含空scheduleId数组）
+        setErrors({ form: '' }); // 清除之前的错误
 
-            await createVenue(formData,localStorage.getItem("authToken") as string);
-            setSuccessMessage('场馆创建成功！');
-            setTimeout(() => navigate('/home'), 1500); // 成功后跳转
+        try {
+            let response;
+            if (isCreating) {
+                response = await createVenue(formData, localStorage.getItem("authToken") as string);
+            } else {
+                response = await changeVenue(
+                    { ...formData, id: parseInt(venue_id as string) },
+                    localStorage.getItem("authToken") as string
+                );
+            }
+
+            setSuccessMessage(response);
+            console.log(response,formData);
+            setTimeout(() => navigate('/home'), 1500);
         } catch (error) {
-            setErrors({ form: `创建失败: ${error}` });
+            setErrors({ form: `创建/修改失败: ${error instanceof Error ? error.message : String(error)}` });
         } finally {
             setIsSubmitting(false);
         }
@@ -101,14 +126,16 @@ export function VenueCreate() {
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                     <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-white">创建新场馆</h2>
+                            {(isCreating)?(<h2 className="text-2xl font-bold text-white">创建新场馆</h2>):
+                            <h2 className="text-2xl font-bold text-white">修改场馆</h2>
+                            }
                             <div className="bg-indigo-800 rounded-full p-2" onClick={()=>{navigate('/home')}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
                             </div>
                         </div>
-                        <p className="text-indigo-200 mt-2">添加新的演出场所信息</p>
+                        <p className="text-indigo-200 mt-2">设置运动场所信息</p>
                     </div>
 
                     <form className="p-6 space-y-6" onSubmit={handleSubmit}>
@@ -169,7 +196,7 @@ export function VenueCreate() {
                                 } rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                                 value={formData.name}
                                 onChange={handleChange}
-                                placeholder="输入场馆名称"
+                                placeholder="输入场馆名称(修改时可留空，表示不更改)"
                             />
                         </div>
 
@@ -191,7 +218,7 @@ export function VenueCreate() {
                                 } rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                                 value={formData.description}
                                 onChange={handleChange}
-                                placeholder="描述场馆特点、位置等信息"
+                                placeholder="描述场馆特点、位置等信息(修改时可留空，表示不更改)"
                             />
                         </div>
 
@@ -215,7 +242,7 @@ export function VenueCreate() {
                                 disabled={isSubmitting}
                                 className="flex-1 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition disabled:opacity-70"
                             >
-                                {isSubmitting ? <p className={`text-black`}>创建中...</p> :<p className={`text-black`}> 创建场馆</p>}
+                                {isSubmitting ? <p className={`text-black`}>提交中...</p> :<p className={`text-black`}> 提交场馆</p>}
                             </button>
 
                             <button

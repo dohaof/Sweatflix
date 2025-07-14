@@ -14,11 +14,10 @@ import java.util.List;
 @Setter
 public class VenueScheduleVO {
     private Integer id;
-    private Integer venueId;
+    private String venueName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer capacity;
     private Double price;
-    private Boolean autoRenew;
     private List<Integer> scheduleOrdersId;
 }

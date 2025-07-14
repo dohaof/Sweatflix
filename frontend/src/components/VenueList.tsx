@@ -3,6 +3,7 @@ import type { Venue } from '../types';
 import {useContext, useEffect, useState} from "react";
 import {HomeContext} from "../contexts/globalContexts.tsx";
 import {getVenue} from "../api/venueAPI.ts";
+import {useNavigate} from "react-router-dom";
 
 const VenueList = () => {
     const state = useContext(HomeContext)
@@ -22,6 +23,7 @@ const VenueList = () => {
     // ] 测试用;
     const [venues, setVenues] = useState<Venue[]>([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchVenues = async () => {
             try {
@@ -51,7 +53,7 @@ const VenueList = () => {
                     <VenueItem
                         key={venue.id}
                         venue={venue}
-                        onClick={() => console.log("todo")}
+                        onClick={() => {navigate('/venue/' + venue.id)}}
                     />
                 ))}
             </div>

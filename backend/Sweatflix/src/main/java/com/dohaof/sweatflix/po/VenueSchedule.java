@@ -22,27 +22,23 @@ public class VenueSchedule {
 
     @Column(nullable = false)
     private LocalDateTime startTime;
-
     @Column(nullable = false)
     private LocalDateTime endTime;
     @Column(nullable = false)
     private Integer capacity;
     @Column(nullable = false)
     private Double price;
-    @Column
-    private Boolean autoRenew;
     // 关联到具体的订单
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleOrder> scheduleOrder;
     public VenueScheduleVO toVenueScheduleVO() {
         VenueScheduleVO vo = new VenueScheduleVO();
         vo.setId(id);
-        vo.setVenueId(venue.getId());
+        vo.setVenueName(venue.getName());
         vo.setStartTime(startTime);
         vo.setEndTime(endTime);
         vo.setCapacity(capacity);
         vo.setPrice(price);
-        vo.setAutoRenew(autoRenew);
         vo.setScheduleOrdersId(scheduleOrder.stream().map(ScheduleOrder::getId).collect(Collectors.toList()));
         return vo;
     }

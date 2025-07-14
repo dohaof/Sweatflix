@@ -12,7 +12,17 @@ const VenueItem: React.FC<VenueItemProps> = ({ venue, onClick }) => {
             className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition"
     onClick={onClick}
     >
-    <div className="h-48 bg-gray-200 border-2 border-dashed rounded-t-xl" />
+            <div className="h-48 bg-gray-200 border-2 border-dashed rounded-t-xl" >
+                {venue.image ? (
+                    <img
+                        src={venue.image}
+                        alt="场地照片"
+                        className="w-full h-full object-cover"
+                    />
+                ) : (
+                    <div className="flex items-center justify-center bg-gray-200 w-full h-full">没有照片</div>
+                )}
+            </div>
     <div className="p-4">
     <div className="flex justify-between items-start">
     <h3 className="text-xl font-bold text-gray-800">{venue.name}</h3>

@@ -19,7 +19,7 @@ export async function createVenue(e:VenueCreation,token:string):Promise<string> 
         if (result.code == 200) {
             return result.data;
         } else {
-            throw new Error(result.message || ("创建场馆api失败"+response.status));
+            throw new Error(result.msg || ("创建场馆api失败"+response.status));
         }
     } catch (error) {
         console.error("创建场馆api错误:", error);
@@ -44,7 +44,7 @@ export async function getVenue(token:string):Promise<Venue[]> {
         if (result.code == 200) {
             return result.data;
         } else {
-            throw new Error(result.message || ("GET场馆api失败"+response.status));
+            throw new Error(result.msg || ("GET场馆api失败"+response.status));
         }
     } catch (error) {
         console.error("GET场馆api错误:", error);
@@ -69,7 +69,7 @@ export async function getVenueById(venueId: number | undefined, token: string):P
         if (result.code == 200) {
             return result.data;
         } else {
-            throw new Error(result.message || ("GET场馆api失败"+response.status));
+            throw new Error(result.msg || ("GET场馆api失败"+response.status));
         }
     } catch (error) {
         console.error("GET场馆api错误:", error);
@@ -95,7 +95,7 @@ export async function changeVenue(e:VenueChange,token:string):Promise<string> {
         if (result.code == 200) {
             return result.data;
         } else {
-            throw new Error(result.message || ("PUT场馆api失败"+response.status));
+            throw new Error(result.msg || ("PUT场馆api失败"+response.status));
         }
     } catch (error) {
         console.error("PUT场馆api错误:", error);
@@ -120,7 +120,7 @@ export async function deleteVenue(venueId:number,token:string):Promise<string> {
         if (result.code == 200) {
             return result.data;
         } else {
-            throw new Error(result.message || ("DELETE场馆api失败"+response.status));
+            throw new Error(result.msg || ("DELETE场馆api失败"+response.status));
         }
     } catch (error) {
         console.error("DELETE场馆api错误:", error);

@@ -50,7 +50,11 @@ export function RegisterPage() {
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-
+        const maxSize = 20 * 1024 * 1024;
+        if (file && file.size > maxSize) {
+            alert('文件大小不能超过20MB！');
+            e.target.value = ''; // 清空已选文件
+        }
         // 客户端预览
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -213,8 +217,8 @@ export function RegisterPage() {
                                 value={formData.role}
                                 onChange={handleChange}
                             >
-                                <option value="USER">普通用户</option>
-                                <option value="ADMIN">管理员</option>
+                                <option value="norm">普通用户</option>
+                                <option value="admin">管理员</option>
                             </select>
                         </div>
 

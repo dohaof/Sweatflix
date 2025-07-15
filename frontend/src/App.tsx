@@ -8,13 +8,13 @@ import {useState} from "react";
 import type {User} from "./types.ts";
 import {VenueCreateOrModify} from "./pages/VenueCreateOrModify.tsx";
 import {VenueDetail} from "./pages/VenueDetail.tsx";
+import {ScheduleCreate} from "./pages/ScheduleCreate.tsx";
 
 
 
 function NotificationPage() {
     return null;
 }
-
 
 
 
@@ -32,6 +32,7 @@ const [currentUser, setCurrentUser] = useState<User | null>(null);
                 <Route path="/user/modify" element={<ModifyPage/>}/>
                 <Route path="/venue/create/:venue_id?" element={<VenueCreateOrModify/>}/>
                 <Route path="/venue/:venue_id" element={<VenueDetail />} />
+                <Route path="/venue/createSchedule/:venue_id" element={<ScheduleCreate />} />
                 <Route path="/notification/:user_id" element={<NotificationPage />} />
             </Routes>
         </BrowserRouter>

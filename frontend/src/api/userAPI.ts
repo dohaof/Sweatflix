@@ -77,7 +77,7 @@ export async function userModify(e:ModifyForm,token:string){
         if (result.code == 200) {
             return result.data; // “修改成功”
         } else {
-            throw new Error(result.msg || ("修改用户api失败:"+result.msg));
+            throw new Error(result.msg || ("修改用户api失败:"+result.status));
         }
     } catch (error) {
         console.error("修改用户api错误:", error);

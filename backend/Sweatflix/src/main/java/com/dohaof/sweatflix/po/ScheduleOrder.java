@@ -16,10 +16,10 @@ public class ScheduleOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @OneToOne
-    private User user;
     @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "venue_schedule_id")
     private VenueSchedule venueSchedule;
     private LocalDateTime orderTime;
     private Boolean paySuccess;

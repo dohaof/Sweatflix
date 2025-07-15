@@ -50,17 +50,20 @@ export function VenueCreateOrModify() {
             return;
         }
 
-        if(!isCreating) {fetchData()
-        }
+        if(!isCreating) {fetchData()}
         if (!state.currentUser) {
             navigate('/home'); // 在 useEffect 里调用 navigate
             return;
         }
-    }, [state, navigate]);
+    }, [state, navigate, isCreating, venue_id]);
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-
+        const maxSize = 20 * 1024 * 1024;
+        if (file && file.size > maxSize) {
+            alert('文件大小不能超过20MB！');
+            e.target.value = ''; // 清空已选文件
+        }
         // 客户端预览
         const reader = new FileReader();
         reader.onloadend = () => {

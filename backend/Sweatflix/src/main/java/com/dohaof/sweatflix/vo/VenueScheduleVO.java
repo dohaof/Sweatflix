@@ -19,5 +19,5 @@ public class VenueScheduleVO {
     private LocalDateTime endTime;
     private Integer capacity;
     private Double price;
-    private List<Integer> scheduleOrdersId;
+    private List<ScheduleOrderVO> scheduleOrders;
 }

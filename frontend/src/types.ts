@@ -59,8 +59,8 @@ export interface VenueSchedule {
     endTime: string;
     capacity: number;
     price: number;
-    autoRenew: boolean;
-    scheduleOrderId: number[];
+    scheduleOrders: ScheduleOrder[];
+    bookedForCurrentUser: boolean;//frontend only used for button disable
 }
 export interface VenueScheduleCreation {
     venueId: number;
@@ -68,7 +68,6 @@ export interface VenueScheduleCreation {
     endTime: string;
     capacity: number;
     price: number;
-    autoRenew: boolean;
 }
 
 export interface ScheduleOrder {
@@ -77,4 +76,8 @@ export interface ScheduleOrder {
     venueScheduleId: number;
     orderId: string;
     paySuccess: boolean;
+}
+export interface  BookResponse{
+    orderId: number;
+    info: string;
 }

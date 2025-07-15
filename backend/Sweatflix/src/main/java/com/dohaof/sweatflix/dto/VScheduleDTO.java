@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 public class VScheduleDTO {
-    private Integer id;
     private Integer venueId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

@@ -3,6 +3,7 @@ import {useNavigate, useParams} from 'react-router-dom';
 import type {Venue, VenueSchedule} from "../types.ts";
 import {deleteVenue, getVenueById} from "../api/venueAPI.ts";
 import {UserContext} from "../contexts/globalContexts.tsx";
+import {bookSchedule, deleteSchedule, getSchedulesOfVenue, notifyPay} from "../api/scheduleAPI.ts";
 // import { getVenueById, getVenueSchedules } from '../api/venueAPI.ts'; // 根据你的实际路径调整
 
 export function VenueDetail() {
@@ -35,9 +36,45 @@ export function VenueDetail() {
             setIsDeleting(false);
         }
     };
+    const handleScheduleClick =async (scheduleId:number) => {
+        try {
+            const token = localStorage.getItem('authToken') as string;
+            let responseData;
+            if(state!.currentUser!.role=='admin') {
+                if (!window.confirm('确定要删除吗？此操作不可撤销。')) {
+                    return;
+                }
+                responseData = await deleteSchedule(scheduleId,token)
+                setSchedules(prevSchedules =>
+                    prevSchedules.filter(s => s.id !== scheduleId)
+                );
+                window.alert(responseData);
+            }else {
+                if (!window.confirm('确定要预定吗？')) {
+                    return;
+                }
+                responseData = await bookSchedule(scheduleId,token)
+                if(window.confirm('模拟付款成功？(模拟支付宝等支付回调是否成功)')){setSchedules(prevSchedules =>
+                    prevSchedules.map(schedule =>
+                        schedule.id === scheduleId
+                            ? { ...schedule, bookedForCurrentUser: true } // 创建新对象
+                            : schedule
+                    )
+                );
+                    console.log(schedules);
+                    await notifyPay(responseData.orderId, true, token)
+                }else{
+                    await notifyPay(responseData.orderId, false, token)
+                }
+                window.alert(responseData.info);
+            }
+        }catch (error) {
+            window.alert(error);
+        }
+    }
     const handleToggleFavorite = async () => {
         if (!state || !venue) return;
-
+        setIsFavorite(true);
         // try {
         //     const token = localStorage.getItem('token') || '';
         //     const newFavoriteStatus = await toggleFavorite(token, venue.id);
@@ -55,6 +92,7 @@ export function VenueDetail() {
         //     // 这里可以添加错误提示
         // }
     };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -66,9 +104,11 @@ export function VenueDetail() {
                 setVenue(venueData);
 
                 // 获取场馆排期
-                const scheduleData = await getVenueSchedules(token, venueData.id);
+                const scheduleData = await getSchedulesOfVenue(venueData.id,token);
+                scheduleData.forEach((schedule) => {
+                    schedule.bookedForCurrentUser = schedule.scheduleOrders && schedule.scheduleOrders.some(item => item.userId == state!.currentUser!.id && (item.paySuccess == null || item.paySuccess));
+                })
                 setSchedules(scheduleData);
-
                 setError(null);
             } catch (err) {
                 setError(err instanceof Error ? err.message : '加载场馆详情失败');
@@ -87,7 +127,7 @@ export function VenueDetail() {
             console.log(venue_id);
             setLoading(false);
         }
-    }, [navigate, state?.currentUser, venue_id]);
+    }, [navigate, state, state?.currentUser, venue_id]);
 
     if (loading) {
         return (
@@ -191,7 +231,7 @@ export function VenueDetail() {
                                 )}
                             </button>
                                 <button
-                                    onClick={()=>{navigate('')}}
+                                    onClick={()=>{navigate('/venue/createSchedule/'+venue.id)}}
                                     disabled={isDeleting}
                                     className="btn btn-error btn-sm"
                                 >
@@ -286,9 +326,9 @@ export function VenueDetail() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {schedules.map((schedule) => (
-                                <div key={schedule.id} className="card bg-base-100 shadow-md">
-                                    <div className="card-body">
-                                        <h3 className="card-title text-lg">{formatDateTime(schedule.startTime)}</h3>
+                                <div key={schedule.id} className="card bg-base-100 shadow-md border rounded">
+                                    <div className="card-body px-2">
+                                        <h3 className="card-title text-lg">开始:{formatDateTime(schedule.startTime)}</h3>
                                         <p className="text-gray-600">结束: {formatDateTime(schedule.endTime)}</p>
 
                                         <div className="flex justify-between items-center mt-3">
@@ -303,8 +343,12 @@ export function VenueDetail() {
                                         </div>
 
                                         <div className="card-actions justify-end mt-4">
-                                            <button className="btn btn-primary btn-sm">
-                                                立即预约
+                                            <button className="btn btn-primary btn-sm" onClick={()=>{handleScheduleClick(schedule.id)
+
+                                            }}
+                                            disabled={state!.currentUser!.role=="norm"&& (schedule.bookedForCurrentUser||schedule.scheduleOrders.filter((e)=>e.paySuccess==null||e.paySuccess).length>=schedule.capacity)}>
+                                                {state!.currentUser!.role=='admin'?'删除排程':(schedule.bookedForCurrentUser?'预约成功'
+                                                    :(schedule.bookedForCurrentUser||schedule.scheduleOrders.filter((e)=>e.paySuccess==null||e.paySuccess).length>=schedule.capacity)?"人数已满": '立即预约')}
                                             </button>
                                         </div>
                                     </div>
@@ -360,38 +404,35 @@ export function VenueDetail() {
 }
 
 // 示例API函数（需要根据实际API实现）
-async function getVenueSchedules(token: string, venueId: number): Promise<VenueSchedule[]> {
-    // 实际实现中调用API
-    return [
-        {
-            id: 1,
-            venueId,
-            startTime: "2023-07-20T09:00:00Z",
-            endTime: "2023-07-20T11:00:00Z",
-            capacity: 20,
-            price: 300,
-            autoRenew: false,
-            scheduleOrderId: []
-        },
-        {
-            id: 2,
-            venueId,
-            startTime: "2023-07-20T13:00:00Z",
-            endTime: "2023-07-20T15:00:00Z",
-            capacity: 20,
-            price: 350,
-            autoRenew: true,
-            scheduleOrderId: []
-        },
-        {
-            id: 3,
-            venueId,
-            startTime: "2023-07-20T18:00:00Z",
-            endTime: "2023-07-20T20:00:00Z",
-            capacity: 20,
-            price: 400,
-            autoRenew: false,
-            scheduleOrderId: []
-        }
-    ];
-}
+// async function getVenueSchedules(token: string, venueId: number): Promise<VenueSchedule[]> {
+//     // 实际实现中调用API
+//     return [
+//         {
+//             id: 1,
+//             venueId,
+//             startTime: "2023-07-20T09:00:00Z",
+//             endTime: "2023-07-20T11:00:00Z",
+//             capacity: 20,
+//             price: 300,
+//             scheduleOrderId: []
+//         },
+//         {
+//             id: 2,
+//             venueId,
+//             startTime: "2023-07-20T13:00:00Z",
+//             endTime: "2023-07-20T15:00:00Z",
+//             capacity: 20,
+//             price: 350,
+//             scheduleOrderId: []
+//         },
+//         {
+//             id: 3,
+//             venueId,
+//             startTime: "2023-07-20T18:00:00Z",
+//             endTime: "2023-07-20T20:00:00Z",
+//             capacity: 20,
+//             price: 400,
+//             scheduleOrderId: []
+//         }
+//     ];
+// }

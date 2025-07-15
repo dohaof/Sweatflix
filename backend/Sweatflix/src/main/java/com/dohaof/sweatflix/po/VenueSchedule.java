@@ -29,7 +29,7 @@ public class VenueSchedule {
     @Column(nullable = false)
     private Double price;
     // 关联到具体的订单
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "venueSchedule",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleOrder> scheduleOrder;
     public VenueScheduleVO toVenueScheduleVO() {
         VenueScheduleVO vo = new VenueScheduleVO();
@@ -39,7 +39,7 @@ public class VenueSchedule {
         vo.setEndTime(endTime);
         vo.setCapacity(capacity);
         vo.setPrice(price);
-        vo.setScheduleOrdersId(scheduleOrder.stream().map(ScheduleOrder::getId).collect(Collectors.toList()));
+        vo.setScheduleOrders(scheduleOrder.stream().map(ScheduleOrder::toVO).collect(Collectors.toList()));
         return vo;
     }
 }

@@ -2,7 +2,7 @@ import {Header} from "../components/Header.tsx";
 import { useState} from "react";
 import {HomeContext } from "../contexts/globalContexts.tsx";
 import {SideBar} from "../components/SideBar.tsx";
-import VenueList from "../components/VenueList.tsx";
+import {VenueList} from "../components/VenueList.tsx";
 export function HomePage() {
     const [isSideBarOpen, setIsSideBarOpen] = useState(true);
     return(

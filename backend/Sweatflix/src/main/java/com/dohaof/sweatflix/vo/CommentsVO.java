@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,9 +19,11 @@ import java.time.LocalDateTime;
 public class CommentsVO {
     private Integer id;
     private String content;
-    private Integer authorId;
+    private Integer venueId;
+    private String userName;
+    private String userAvatar;
     private Integer rate;
-    private String image;
+    private List<String> images;
     private LocalDateTime createdAt;
     private Integer thumbUpCount;
 }

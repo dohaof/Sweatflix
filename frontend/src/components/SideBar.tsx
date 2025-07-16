@@ -29,25 +29,24 @@ export function SideBar(): JSX.Element {
                 <div className="flex-1 overflow-auto">
                     {state!=null&&state.isLoggedIn && state.currentUser!=null? (
                         <div className="space-y-6">
-                            <div className="flex items-center space-x-4">
-                                <div className="border-2 border-dashed rounded-xl w-[12vw] aspect-square overflow-hidden">
+                            <div className="flex items-center space-x-4 w-full md:w-[20vw]">
+                                <div className="border-2 border-dashed rounded-xl overflow-hidden inline-flex">
                                     {state.currentUser.image ? (
                                         <img
                                             src={state.currentUser.image}
                                             alt="用户头像"
-                                            className="w-full h-full object-cover"
+                                            className="max-w-full h-auto" // 让高度根据宽度自动调整
                                         />
                                     ) : (
-                                        <div className="flex items-center justify-center bg-gray-200 w-full h-full">没有头像</div>
+                                        <div className="flex items-center justify-center bg-gray-200 w-[20vw] h-[20vw]">没有头像</div>
                                     )}
                                 </div>
-                                <div>
-                                    <h3 className="text-xl text-amber-950 font-bold">用户名: {state.currentUser.username}</h3>
-                                    <p className="text-gray-600">手机号: {state.currentUser.phone}</p>
-                                    <p className="text-gray-600">{state.currentUser.role=='admin'?'管理员':"普通用户"}</p>
-                                </div>
                             </div>
-
+                            <div>
+                                <h3 className="text-xl text-amber-950 font-bold">用户名: {state.currentUser.username}</h3>
+                                <p className="text-gray-600">手机号: {state.currentUser.phone}</p>
+                                <p className="text-gray-600">{state.currentUser.role=='admin'?'管理员':"普通用户"}</p>
+                            </div>
                             <div>
                                 <h4 className="font-semibold mb-3 text-black">账户设置</h4>
                                 <ul className="space-y-2">

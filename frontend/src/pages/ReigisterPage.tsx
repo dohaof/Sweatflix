@@ -119,7 +119,7 @@ export function RegisterPage() {
                                     <img
                                         src={avatarPreview}
                                         alt="头像预览"
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover rounded-full"
                                     />
                                 ) : (
                                     <div className="flex items-center justify-center w-full h-full" >

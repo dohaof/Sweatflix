@@ -2,13 +2,11 @@ package com.dohaof.sweatflix.controller;
 
 import com.dohaof.sweatflix.dto.VScheduleDTO;
 import com.dohaof.sweatflix.service.VenueScheduleService;
-import com.dohaof.sweatflix.vo.BookResponseDTO;
+import com.dohaof.sweatflix.dto.BookResponseDTO;
 import com.dohaof.sweatflix.vo.Response;
 import com.dohaof.sweatflix.vo.VenueScheduleVO;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

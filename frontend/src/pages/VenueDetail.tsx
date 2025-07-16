@@ -1,9 +1,11 @@
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect, useContext, useCallback} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
-import type {Venue, VenueSchedule} from "../types.ts";
+import type {CommentDTO, CommentVO, Venue, VenueSchedule} from "../types.ts";
 import {deleteVenue, getVenueById} from "../api/venueAPI.ts";
 import {UserContext} from "../contexts/globalContexts.tsx";
 import {bookSchedule, deleteSchedule, getSchedulesOfVenue, notifyPay} from "../api/scheduleAPI.ts";
+import {addComment, getCommentsByVenueId, thumbUpComment} from "../api/commentAPI.ts";
+import {uploadImageToServer} from "../api/upload.ts";
 // import { getVenueById, getVenueSchedules } from '../api/venueAPI.ts'; // 根据你的实际路径调整
 
 export function VenueDetail() {
@@ -17,6 +19,13 @@ export function VenueDetail() {
     const state=useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [comments, setComments] = useState<CommentVO[]>([]);
+    const [newComment, setNewComment] = useState({
+        content: '',
+        rate: 5,
+        images: [] as string[]
+    } as CommentDTO);
+    const [isLoadingComments, setIsLoadingComments] = useState(false);
     const navigate = useNavigate();
     const handleDelete = async () => {
         if (!venue || !state) return;
@@ -27,7 +36,7 @@ export function VenueDetail() {
 
         try {
             setIsDeleting(true);
-            await deleteVenue(venue.id,localStorage.getItem("authToken") as string);
+            await deleteVenue(venue.id,sessionStorage.getItem("authToken") as string);
             navigate('/home'); // 删除成功后跳转回场馆列表
         } catch (err) {
             setError(err instanceof Error ? err.message : '删除场馆失败');
@@ -38,7 +47,7 @@ export function VenueDetail() {
     };
     const handleScheduleClick =async (scheduleId:number) => {
         try {
-            const token = localStorage.getItem('authToken') as string;
+            const token = sessionStorage.getItem('authToken') as string;
             let responseData;
             if(state!.currentUser!.role=='admin') {
                 if (!window.confirm('确定要删除吗？此操作不可撤销。')) {
@@ -72,11 +81,115 @@ export function VenueDetail() {
             window.alert(error);
         }
     }
+    const fetchComments = useCallback(async () => {
+        if (!venue_id) return;
+
+        try {
+            setIsLoadingComments(true);
+            const token = sessionStorage.getItem('authToken') as string;
+            const commentsData = await getCommentsByVenueId(parseInt(venue_id), token);
+            console.log(commentsData);
+            setComments(commentsData);
+        } catch (error) {
+            setError('加载评论失败: ' + (error instanceof Error ? error.message : String(error)));
+        } finally {
+            setIsLoadingComments(false);
+        }
+    },[venue_id]);
+    const handleSubmitComment = async () => {
+        if (!newComment.content.trim()) {
+            alert('请填写评论内容');
+            return;
+        }
+
+        if (!venue || !state?.currentUser) return;
+
+        try {
+            const token = sessionStorage.getItem('authToken') as string;
+            const dto = {
+                venueId: venue.id,
+                content: newComment.content,
+                rate: newComment.rate,
+                images: newComment.images
+            };
+
+            await addComment(dto, token);
+
+            // 重置表单并刷新评论
+            setNewComment({ content: '', rate: 5, images: [] });
+            await fetchComments();
+            setActiveTab('comments');
+            alert('评论发表成功！');
+        } catch (error) {
+            alert('发表评论失败: ' + (error instanceof Error ? error.message : String(error)));
+        }
+    };
+    const handleThumbUp = async (commentId: number) => {
+        try {
+            const token = sessionStorage.getItem('authToken') as string;
+            await thumbUpComment(commentId, token);
+
+            // 更新点赞状态
+            setComments(prev => prev.map(comment =>
+                comment.id === commentId
+                    ? { ...comment, thumbUpCount: comment.thumbUpCount + 1, hasThumbed: true }
+                    : comment
+            ));
+        } catch (error) {
+            alert('点赞失败: ' + (error instanceof Error ? error.message : String(error)));
+        }
+    };
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        const newImages = [...newComment.images];
+
+        // 限制最多3张图片
+        if (newImages.length + files.length > 3) {
+            alert('最多只能上传3张图片');
+            return;
+        }
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.size > 20 * 1024 * 1024) { // 5MB限制
+                alert('图片大小不能超过20MB');
+                continue;
+            }
+
+            // const reader = new FileReader();
+            // reader.onload = (event) => {
+            //     if (event.target?.result) {
+            //         newImages.push(event.target.result as string);
+            //         setNewComment({...newComment, images: newImages});
+            //     }
+            // };
+            // reader.readAsDataURL(file);
+            try {
+                // 上传到服务器
+                const imageUrl = await uploadImageToServer(file);
+                newImages.push(imageUrl);
+                // 保存服务器返回的URL
+                setNewComment({ ...newComment, images: newImages});
+            } catch (error) {
+                window.alert("图片上传失败，请重试！");
+                console.error("上传错误详情:", error);
+            }
+        }
+    };
+
+// 删除已选图片
+    const removeImage = (index: number) => {
+        const newImages = [...newComment.images];
+        newImages.splice(index, 1);
+        setNewComment({ ...newComment, images: newImages });
+    };
     const handleToggleFavorite = async () => {
         if (!state || !venue) return;
         setIsFavorite(true);
         // try {
-        //     const token = localStorage.getItem('token') || '';
+        //     const token = sessionStorage.getItem('token') || '';
         //     const newFavoriteStatus = await toggleFavorite(token, venue.id);
         //     setIsFavorite(newFavoriteStatus);
         //
@@ -97,7 +210,7 @@ export function VenueDetail() {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const token = localStorage.getItem('authToken') as string;
+                const token = sessionStorage.getItem('authToken') as string;
 
                 // 获取场馆详情
                 const venueData = await getVenueById(parseInt(venue_id as string),token);
@@ -110,6 +223,7 @@ export function VenueDetail() {
                 })
                 setSchedules(scheduleData);
                 setError(null);
+
             } catch (err) {
                 setError(err instanceof Error ? err.message : '加载场馆详情失败');
             } finally {
@@ -127,7 +241,10 @@ export function VenueDetail() {
             console.log(venue_id);
             setLoading(false);
         }
-    }, [navigate, state, state?.currentUser, venue_id]);
+        if (activeTab === 'comments' && comments.length == 0) {
+            fetchComments();
+        }
+    }, [activeTab, comments.length, fetchComments, navigate, state, state?.currentUser, venue_id]);
 
     if (loading) {
         return (
@@ -162,6 +279,7 @@ export function VenueDetail() {
     // 格式化日期时间
     const formatDateTime = (dateString: string) => {
         const date = new Date(dateString);
+        console.log(dateString)
         return date.toLocaleString('zh-CN', {
             year: 'numeric',
             month: '2-digit',
@@ -172,10 +290,10 @@ export function VenueDetail() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="container mx-auto px-4 py-8 max-w-6xl bg-blue-50 rounded-xl">
             {/* 顶部图片和基本信息 */}
             <div className="flex flex-col md:flex-row gap-8 mb-10">
-                <div className="md:w-1/2">
+                <div className="md:w-1/2 border-1 rounded">
                     {venue.image ? (
                         <img
                             src={venue.image}
@@ -312,7 +430,7 @@ export function VenueDetail() {
             </div>
 
             {/* 内容区域 */}
-            {activeTab === 'schedules' ? (
+            {activeTab === 'schedules' && (
                 <div className="space-y-4">
                     <h2 className="text-2xl font-bold mb-4">可预约时段</h2>
 
@@ -357,48 +475,173 @@ export function VenueDetail() {
                         </div>
                     )}
                 </div>
-            ) : (
+            )}
+            {activeTab === 'comments' && (
                 <div>
-                    <h2 className="text-2xl font-bold mb-4">用户评论</h2>
+                    <h2 className="text-2xl font-bold mb-4">用户评论 ({comments.length})</h2>
 
-                    <div className="alert alert-info">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span>评论功能即将上线，敬请期待！</span>
-                    </div>
-
-                    {/* 占位评论 */}
-                    <div className="space-y-6 mt-6">
-                        <div className="bg-base-100 p-4 rounded-lg shadow">
-                            <div className="flex items-center mb-3">
-                                <div className="avatar placeholder">
-                                    <div className="bg-neutral-focus text-neutral-content rounded-full w-10">
-                                        <span className="text-xs">用户</span>
-                                    </div>
-                                </div>
-                                <div className="ml-3">
-                                    <h4 className="font-bold">张先生</h4>
-                                    <div className="rating rating-xs">
-                                        {[...Array(5)].map((_, i) => (
-                                            <input
-                                                key={i}
-                                                type="radio"
-                                                name="rating"
-                                                className="mask mask-star-2 bg-orange-400"
-                                                checked={i < 4}
-                                                readOnly
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                            <p className="text-gray-700">场地设施非常完善，服务也很周到，下次还会再来！</p>
-                            <p className="text-gray-500 text-sm mt-2">2023-06-15</p>
+                    {isLoadingComments ? (
+                        <div className="flex justify-center py-8">
+                            <span className="loading loading-spinner loading-lg"></span>
                         </div>
-                    </div>
+                    ) : comments.length === 0 ? (
+                        <div className="alert alert-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                 className="stroke-current shrink-0 w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>暂无评论，成为第一个评论者吧！</span>
+                        </div>
+                    ) : (
+                        <div className="space-y-6">
+                            {comments.map(comment => (
+                                <div key={comment.id} className="bg-base-100 p-4 rounded-lg shadow">
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div className="flex items-center">
+                                            <div className="avatar placeholder">
+                                                <div className="bg-neutral-focus text-neutral-content rounded-full">
+                                                    {/*<span className="text-xs">{comment.userName}</span>*/}
+                                                        {comment.userAvatar ? (
+                                                            <img
+                                                                src={comment.userAvatar}
+                                                                alt="用户头像"
+                                                                className="w-[8vw] h-[8vw] rounded-full object-cover" // 让高度根据宽度自动调整
+                                                            />
+                                                        ) : (
+                                                            <div className="flex items-center justify-center rounded-full bg-gray-200 w-[8vw] h-[8vw]">没有头像</div>
+                                                        )}
+                                                </div>
+                                            </div>
+                                            <div className="ml-3">
+                                                <h4 className="font-bold">{comment.userName}</h4>
+                                                <div className="rating rating-xs">
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <input
+                                                            key={i}
+                                                            type="radio"
+                                                            name={`rating-${comment.id}`}
+                                                            className="mask mask-star-2 bg-orange-400"
+                                                            checked={i < comment.rate}
+                                                            readOnly
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span className="text-gray-500 text-sm">
+                {formatDateTime(comment.createdAt)}
+              </span>
+                                    </div>
+
+                                    <p className="text-gray-700 mb-3">{comment.content}</p>
+
+                                    {comment.images.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mb-3">
+                                            {comment.images.map((img, idx) => (
+                                                <img
+                                                    key={idx}
+                                                    src={img}
+                                                    alt={`评论图片 ${idx + 1}`}
+                                                    className="w-20 h-20 object-cover rounded cursor-pointer"
+                                                    onClick={() => window.open(img, '_blank')}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    <div className="flex justify-between items-center">
+                                        <button
+                                            className={`btn btn-sm ${comment.hasThumbed ? 'btn-primary' : 'btn-outline'}`}
+                                            onClick={() => handleThumbUp(comment.id)}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905a3.61 3.61 0 01-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                            </svg>
+                                            点赞 ({comment.thumbUpCount})
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
+            {activeTab === 'post-comment' && (
+            <div className="max-w-2xl mx-auto">
+                <h2 className="text-2xl font-bold mb-6">发表评论</h2>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">评分</label>
+                    <div className="rating rating-lg">
+                        {[1, 2, 3, 4, 5].map(star => (
+                            <input
+                                key={star}
+                                type="radio"
+                                name="rating"
+                                className="mask mask-star-2 bg-orange-400"
+                                checked={star === newComment.rate}
+                                onChange={() => setNewComment({...newComment, rate: star})}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">评论内容</label>
+                    <textarea
+                        className="textarea textarea-bordered w-full h-32"
+                        placeholder="分享您的体验..."
+                        value={newComment.content}
+                        onChange={(e) => setNewComment({...newComment, content: e.target.value})}
+                    ></textarea>
+                </div>
+
+                <div className="mb-6">
+                    <label className="block text-sm font-medium mb-2">上传图片 (最多3张)</label>
+                    <input
+                        type="file"
+                        className="file-input file-input-bordered w-full"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        disabled={newComment.images.length >= 3}
+                    />
+
+                    {newComment.images.length > 0 && (
+                        <div className="mt-4 flex flex-wrap gap-3">
+                            {newComment.images.map((img, index) => (
+                                <div key={index} className="relative">
+                                    <img
+                                        src={img}
+                                        alt={`预览 ${index + 1}`}
+                                        className="w-20 h-20 object-cover rounded border"
+                                    />
+                                    <button
+                                        className="absolute -top-2 -right-2 btn btn-circle btn-xs btn-error"
+                                        onClick={() => removeImage(index)}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className="flex justify-end">
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleSubmitComment}
+                        disabled={!newComment.content.trim()}
+                    >
+                        提交评论
+                    </button>
+                </div>
+            </div>
+        )}
         </div>
     );
 }

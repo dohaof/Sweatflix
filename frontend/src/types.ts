@@ -5,12 +5,6 @@ export interface User {
     image: string;
     role:Role
 }
-// const Role = {
-//     admin: 'admin',
-//     norm: 'norm'
-// } as const;
-//
-// export type Role = typeof Role[keyof typeof Role];
 export  type Role = 'norm' | 'admin'
 // 场地类型
 // 登录凭证类型
@@ -80,4 +74,21 @@ export interface ScheduleOrder {
 export interface  BookResponse{
     orderId: number;
     info: string;
+}
+export interface CommentVO {
+    id: number;
+    userId: number;
+    userName: string;
+    userAvatar: string;
+    content: string;
+    rate: number;
+    images: string[];
+    thumbUpCount: number;
+    createdAt: string;
+    hasThumbed: boolean;
+}
+export interface CommentDTO {
+    content: string,
+    rate: number,
+    images: string[]
 }

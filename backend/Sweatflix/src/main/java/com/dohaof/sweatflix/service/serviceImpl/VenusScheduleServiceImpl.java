@@ -10,7 +10,7 @@ import com.dohaof.sweatflix.repository.VenueRepository;
 import com.dohaof.sweatflix.repository.VenueScheduleRepository;
 import com.dohaof.sweatflix.service.VenueScheduleService;
 import com.dohaof.sweatflix.util.TokenUtil;
-import com.dohaof.sweatflix.vo.BookResponseDTO;
+import com.dohaof.sweatflix.dto.BookResponseDTO;
 import com.dohaof.sweatflix.vo.VenueScheduleVO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -9,15 +9,15 @@ interface VenueItemProps {
 const VenueItem: React.FC<VenueItemProps> = ({ venue, onClick }) => {
     return (
         <div
-            className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition"
+            className="bg-gradient-to-tl from-blue-50 to-green-200 rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition"
     onClick={onClick}
     >
-            <div className="h-48 bg-gray-200 border-2 border-dashed rounded-t-xl" >
+            <div className="h-48 bg-gray-200 rounded-2xl border-2 border-dotted" >
                 {venue.image ? (
                     <img
                         src={venue.image}
                         alt="场地照片"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-2xl"
                     />
                 ) : (
                     <div className="flex items-center justify-center bg-gray-200 w-full h-full">没有照片</div>
@@ -33,7 +33,7 @@ const VenueItem: React.FC<VenueItemProps> = ({ venue, onClick }) => {
         <div className="mt-2 flex items-center text-gray-600">
             <span>描述: {venue.description}</span>
         </div>
-    <button className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition">
+    <button className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-black py-2 rounded-lg transition">
         查看详情
         </button>
         </div>

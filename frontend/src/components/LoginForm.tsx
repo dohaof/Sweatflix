@@ -25,7 +25,7 @@ export function LoginForm() {
             // 调用API
             const  responseData=await userLogin(credentials);
             console.log(responseData)
-            localStorage.setItem("authToken", responseData.token);
+            sessionStorage.setItem("authToken", responseData.token);
             if(!state){
                 throw new Error("StaTe Is nUlL??")
             }

@@ -25,7 +25,7 @@ export function ScheduleCreate() {
         const fetchVenue = async () => {
             try {
                 setLoading(true);
-                const token = localStorage.getItem('authToken') as string;
+                const token = sessionStorage.getItem('authToken') as string;
                 const venueData = await getVenueById(parseInt(venue_id as string), token);
                 setVenue(venueData);
                 setError(null);
@@ -80,7 +80,7 @@ export function ScheduleCreate() {
         setError(null);
 
         try {
-            const token = localStorage.getItem('authToken');
+            const token = sessionStorage.getItem('authToken');
             // 调用创建API
             const responseData = await createSchedule(formData,token as string);
             window.alert(responseData)

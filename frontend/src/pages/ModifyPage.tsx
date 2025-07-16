@@ -124,7 +124,7 @@ export function ModifyPage() {
         setSuccessMessage('');
 
         try {
-            const responseData = await userModify(formData,localStorage.getItem("authToken") as string);
+            const responseData = await userModify(formData,sessionStorage.getItem("authToken") as string);
 
             console.log('更新数据:', formData);
             setSuccessMessage(responseData);

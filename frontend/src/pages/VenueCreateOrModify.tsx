@@ -34,7 +34,7 @@ export function VenueCreateOrModify() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const token = localStorage.getItem('authToken') as string;
+                const token = sessionStorage.getItem('authToken') as string;
 
                 // 获取场馆详情
                 const venueData = await getVenueById(parseInt(venue_id as string),token);
@@ -105,11 +105,11 @@ export function VenueCreateOrModify() {
         try {
             let response;
             if (isCreating) {
-                response = await createVenue(formData, localStorage.getItem("authToken") as string);
+                response = await createVenue(formData, sessionStorage.getItem("authToken") as string);
             } else {
                 response = await changeVenue(
                     { ...formData, id: parseInt(venue_id as string) },
-                    localStorage.getItem("authToken") as string
+                    sessionStorage.getItem("authToken") as string
                 );
             }
 

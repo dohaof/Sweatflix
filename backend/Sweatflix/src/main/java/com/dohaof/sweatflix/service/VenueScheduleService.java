@@ -1,7 +1,7 @@
 package com.dohaof.sweatflix.service;
 
 import com.dohaof.sweatflix.dto.VScheduleDTO;
-import com.dohaof.sweatflix.vo.BookResponseDTO;
+import com.dohaof.sweatflix.dto.BookResponseDTO;
 import com.dohaof.sweatflix.vo.VenueScheduleVO;
 import org.springframework.stereotype.Service;
 

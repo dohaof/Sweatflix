@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,22 +18,28 @@ public class Comments {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String content;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "venue_id")
+    private Venue venue;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
     private User author;
     @Min(1)
     @Max(5)
     private Integer rate;
-    private String image;
+    @ElementCollection
+    private List<String> images;
     private LocalDateTime createdAt;
     private Integer thumbUpCount;
     public CommentsVO toVO() {
         CommentsVO vo = new CommentsVO();
         vo.setId(id);
         vo.setContent(content);
-        vo.setAuthorId(author.getId());
+        vo.setUserName(author.getUsername());
+        vo.setUserAvatar(author.getImage());
         vo.setRate(rate);
         vo.setCreatedAt(createdAt);
-        vo.setImage(image);
+        vo.setImages(images);
         vo.setThumbUpCount(thumbUpCount);
         return vo;
     }

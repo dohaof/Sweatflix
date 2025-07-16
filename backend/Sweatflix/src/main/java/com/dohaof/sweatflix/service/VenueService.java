@@ -18,4 +18,8 @@ public interface VenueService {
     List<VenueVO> getAllVenue();
 
     VenueVO getVenueById(Integer venueId);
+
+    String favour(Integer venueId, Integer userId);
+
+    List<Integer> getFavourId(Integer userId);
 }

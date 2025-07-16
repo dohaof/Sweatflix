@@ -2,7 +2,9 @@ package com.dohaof.sweatflix.service.serviceImpl;
 
 import com.dohaof.sweatflix.dto.ModifyVenueDTO;
 import com.dohaof.sweatflix.exception.SFException;
+import com.dohaof.sweatflix.po.Favourite;
 import com.dohaof.sweatflix.po.Venue;
+import com.dohaof.sweatflix.repository.FavouriteRepository;
 import com.dohaof.sweatflix.repository.VenueRepository;
 import com.dohaof.sweatflix.service.VenueService;
 import com.dohaof.sweatflix.vo.VenueVO;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VenueServiceImpl implements VenueService {
     private final VenueRepository venueRepository;
+    private final FavouriteRepository favouriteRepository;
     @Override
     public String addVenue(Venue venue) {
         venueRepository.save(venue);
@@ -54,5 +57,24 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public VenueVO getVenueById(Integer venueId) {
         return venueRepository.findById(venueId).orElseThrow(()->new SFException( "409","场地不存在")).toVO();
+    }
+
+    @Override
+    public String favour(Integer venueId, Integer userId) {
+        Favourite favourite=favouriteRepository.findByUserIdAndVenueId(userId, venueId);
+        if(favourite==null){
+            favourite=new Favourite();
+            favourite.setUserId(userId);
+            favourite.setVenueId(venueId);
+            favouriteRepository.save(favourite);
+            return "收藏成功";
+        }
+        favouriteRepository.delete(favourite);
+        return "取消收藏成功";
+    }
+
+    @Override
+    public List<Integer> getFavourId(Integer userId) {
+        return favouriteRepository.findByUserId(userId).stream().map(Favourite::getVenueId).collect(Collectors.toList());
     }
 }

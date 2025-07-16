@@ -71,11 +71,24 @@ export interface ScheduleOrder {
     orderId: string;
     paySuccess: boolean;
 }
+export interface DetailOrder {
+    id: number;
+    userId: number;
+    venueScheduleId: number;
+    orderId: string;
+    paySuccess: boolean;
+    venueId: number;
+    venueName: string;
+    venueImage: string;
+    startTime: string;
+    endTime: string;
+    price: number;
+}
 export interface  BookResponse{
     orderId: number;
     info: string;
 }
-export interface CommentVO {
+export interface Comment {
     id: number;
     userId: number;
     userName: string;

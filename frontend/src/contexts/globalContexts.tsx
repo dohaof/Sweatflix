@@ -10,4 +10,6 @@ export const UserContext = createContext<{
     setCurrentUser: React.Dispatch<React.SetStateAction<User|null>>;
     isLoggedIn: boolean;
     setIsLoggedIn:React.Dispatch<React.SetStateAction<boolean>>;
+    favourList:number[]
+    setFavourList:React.Dispatch<React.SetStateAction<number[]>>;
 }| null>(null);

@@ -16,8 +16,8 @@ export function Header(): JSX.Element {
             <img src={logo} alt="Logo" className="h-[7vh] rounded-full" onClick={()=>{navigate('/home')}}/>
             <ul className="flex flex-row items-center space-x-6 ml-auto mr-4">
                 <li>
-                    <button className={"hover:text-blue-700"}>
-                        随机推荐
+                    <button className={"hover:text-blue-700"} onClick={()=>navigate(-1)}>
+                        返回
                     </button>
                 </li>
                 <li>

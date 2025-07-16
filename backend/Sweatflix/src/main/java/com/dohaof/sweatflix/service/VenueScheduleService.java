@@ -2,6 +2,8 @@ package com.dohaof.sweatflix.service;
 
 import com.dohaof.sweatflix.dto.VScheduleDTO;
 import com.dohaof.sweatflix.dto.BookResponseDTO;
+import com.dohaof.sweatflix.vo.DetailOrderVO;
+import com.dohaof.sweatflix.vo.ScheduleOrderVO;
 import com.dohaof.sweatflix.vo.VenueScheduleVO;
 import org.springframework.stereotype.Service;
 
@@ -18,4 +20,6 @@ public interface VenueScheduleService {
     BookResponseDTO createOrder(Integer venueScheduleId, Integer userId);
 
     String changeOrderState(Integer scheduleOrderId, Boolean success);
+
+    List<DetailOrderVO> getScheduleByUSerID(Integer userId);
 }

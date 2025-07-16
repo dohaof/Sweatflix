@@ -1,5 +1,6 @@
 package com.dohaof.sweatflix.po;
 
+import com.dohaof.sweatflix.vo.DetailOrderVO;
 import com.dohaof.sweatflix.vo.ScheduleOrderVO;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,6 +31,21 @@ public class ScheduleOrder {
         vo.setUserId(user.getId());
         vo.setVenueScheduleId(venueSchedule.getId());
         vo.setPaySuccess(paySuccess);
+        return vo;
+    }
+    public DetailOrderVO toDetailVO() {
+        DetailOrderVO vo = new DetailOrderVO();
+        vo.setId(id);
+        vo.setOrderTime(orderTime);
+        vo.setUserId(user.getId());
+        vo.setVenueScheduleId(venueSchedule.getId());
+        vo.setPaySuccess(paySuccess);
+        vo.setVenueId(venueSchedule.getVenue().getId());
+        vo.setVenueImage(venueSchedule.getVenue().getImage());
+        vo.setVenueName(venueSchedule.getVenue().getName());
+        vo.setStartTime(venueSchedule.getStartTime());
+        vo.setEndTime(venueSchedule.getEndTime());
+        vo.setPrice(venueSchedule.getPrice());
         return vo;
     }
 }

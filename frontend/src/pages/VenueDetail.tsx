@@ -1,7 +1,7 @@
 import {useState, useEffect, useContext, useCallback} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
-import type {CommentDTO, CommentVO, Venue, VenueSchedule} from "../types.ts";
-import {deleteVenue, getVenueById} from "../api/venueAPI.ts";
+import type {CommentDTO, Comment, Venue, VenueSchedule} from "../types.ts";
+import {deleteVenue, favourVenue, getVenueById} from "../api/venueAPI.ts";
 import {UserContext} from "../contexts/globalContexts.tsx";
 import {bookSchedule, deleteSchedule, getSchedulesOfVenue, notifyPay} from "../api/scheduleAPI.ts";
 import {addComment, getCommentsByVenueId, thumbUpComment} from "../api/commentAPI.ts";
@@ -19,7 +19,7 @@ export function VenueDetail() {
     const state=useContext(UserContext);
     const [isFavorite, setIsFavorite] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [comments, setComments] = useState<CommentVO[]>([]);
+    const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState({
         content: '',
         rate: 5,
@@ -187,23 +187,15 @@ export function VenueDetail() {
     };
     const handleToggleFavorite = async () => {
         if (!state || !venue) return;
-        setIsFavorite(true);
-        // try {
-        //     const token = sessionStorage.getItem('token') || '';
-        //     const newFavoriteStatus = await toggleFavorite(token, venue.id);
-        //     setIsFavorite(newFavoriteStatus);
-        //
-        //     // 显示操作反馈
-        //     if (newFavoriteStatus) {
-        //         // 这里可以添加更美观的通知
-        //         console.log('已添加到收藏');
-        //     } else {
-        //         console.log('已从收藏中移除');
-        //     }
-        // } catch (err) {
-        //     console.error('收藏操作失败:', err);
-        //     // 这里可以添加错误提示
-        // }
+        try {
+            const token = sessionStorage.getItem('authToken') as string;
+            const responseMsg=await favourVenue(venue.id,token);
+            setIsFavorite(!isFavorite);
+            // 显示操作反馈
+            alert(responseMsg);
+        } catch (err) {
+            console.error('收藏操作失败:', err);
+        }
     };
 
     useEffect(() => {
@@ -241,11 +233,18 @@ export function VenueDetail() {
             console.log(venue_id);
             setLoading(false);
         }
+
+    }, [fetchComments, navigate, state, state?.currentUser, venue_id]);
+    useEffect(() => {
         if (activeTab === 'comments' && comments.length == 0) {
             fetchComments();
         }
-    }, [activeTab, comments.length, fetchComments, navigate, state, state?.currentUser, venue_id]);
-
+    }, [activeTab, comments.length, fetchComments]);
+    useEffect(() => {
+        if(state?.favourList.some(e=>e==parseInt(venue_id as string))){
+            setIsFavorite(true);
+        }
+    }, [state, state?.favourList, venue_id]);
     if (loading) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -279,7 +278,7 @@ export function VenueDetail() {
     // 格式化日期时间
     const formatDateTime = (dateString: string) => {
         const date = new Date(dateString);
-        console.log(dateString)
+        // console.log(dateString)
         return date.toLocaleString('zh-CN', {
             year: 'numeric',
             month: '2-digit',
@@ -290,7 +289,7 @@ export function VenueDetail() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-6xl bg-blue-50 rounded-xl">
+        <div className="container mx-auto px-4 py-8 max-w-6xl bg-blue-100 rounded-xl">
             {/* 顶部图片和基本信息 */}
             <div className="flex flex-col md:flex-row gap-8 mb-10">
                 <div className="md:w-1/2 border-1 rounded">
@@ -501,7 +500,6 @@ export function VenueDetail() {
                                         <div className="flex items-center">
                                             <div className="avatar placeholder">
                                                 <div className="bg-neutral-focus text-neutral-content rounded-full">
-                                                    {/*<span className="text-xs">{comment.userName}</span>*/}
                                                         {comment.userAvatar ? (
                                                             <img
                                                                 src={comment.userAvatar}
@@ -568,7 +566,7 @@ export function VenueDetail() {
                 </div>
             )}
             {activeTab === 'post-comment' && (
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto b">
                 <h2 className="text-2xl font-bold mb-6">发表评论</h2>
 
                 <div className="mb-4">
@@ -590,7 +588,7 @@ export function VenueDetail() {
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2">评论内容</label>
                     <textarea
-                        className="textarea textarea-bordered w-full h-32"
+                        className="textarea textarea-bordered w-full h-32 border border-"
                         placeholder="分享您的体验..."
                         value={newComment.content}
                         onChange={(e) => setNewComment({...newComment, content: e.target.value})}
@@ -615,7 +613,7 @@ export function VenueDetail() {
                                     <img
                                         src={img}
                                         alt={`预览 ${index + 1}`}
-                                        className="w-20 h-20 object-cover rounded border"
+                                        className="w-20 h-20 object-cover rounded border border-dotted"
                                     />
                                     <button
                                         className="absolute -top-2 -right-2 btn btn-circle btn-xs btn-error"

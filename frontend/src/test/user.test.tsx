@@ -89,7 +89,7 @@ describe('User相关组件', () => {
                 phone: '13800138000',
                 password: 'password123'
             })
-            expect(localStorage.getItem('authToken')).toBe('fake-token')
+            expect(sessionStorage.getItem('authToken')).toBe('fake-token')
             expect(mockSetCurrentUser).toHaveBeenCalledWith(mockResponse.userVO)
             expect(mockSetIsLoggedIn).toHaveBeenCalledWith(true)
         })

@@ -11,6 +11,8 @@ import com.dohaof.sweatflix.repository.VenueScheduleRepository;
 import com.dohaof.sweatflix.service.VenueScheduleService;
 import com.dohaof.sweatflix.util.TokenUtil;
 import com.dohaof.sweatflix.dto.BookResponseDTO;
+import com.dohaof.sweatflix.vo.DetailOrderVO;
+import com.dohaof.sweatflix.vo.ScheduleOrderVO;
 import com.dohaof.sweatflix.vo.VenueScheduleVO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -96,5 +98,10 @@ public class VenusScheduleServiceImpl implements VenueScheduleService {
         scheduleOrder.setPaySuccess(success);
         scheduleOrderRepository.save(scheduleOrder);
         return "success is not matter";
+    }
+
+    @Override
+    public List<DetailOrderVO> getScheduleByUSerID(Integer userId) {
+        return scheduleOrderRepository.findScheduleOrderByUser_Id(userId).stream().map(ScheduleOrder::toDetailVO).collect(Collectors.toList());
     }
 }

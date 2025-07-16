@@ -4,6 +4,7 @@ import com.dohaof.sweatflix.dto.VenueCreationDTO;
 import com.dohaof.sweatflix.service.VenueService;
 import com.dohaof.sweatflix.vo.Response;
 import com.dohaof.sweatflix.vo.VenueVO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,5 +34,15 @@ public class VenueController {
     @GetMapping("/{venue_id}")
     public Response<VenueVO> getVenues(@PathVariable Integer venue_id) {
         return Response.buildSuccess(venueService.getVenueById(venue_id));
+    }
+    @PostMapping("/favour/{venue_id}")
+    public Response<String> favourVenue(@PathVariable Integer venue_id, HttpServletRequest request) {
+        Integer userId= (Integer) request.getAttribute("userId");
+        return Response.buildSuccess(venueService.favour(venue_id,userId));
+    }
+    @GetMapping("/favour")
+    private Response<List<Integer>> getFavourVenuesId(HttpServletRequest request) {
+        Integer userId = (Integer) request.getAttribute("userId");
+        return Response.buildSuccess(venueService.getFavourId(userId));
     }
 }

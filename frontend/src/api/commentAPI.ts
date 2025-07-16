@@ -1,6 +1,6 @@
-import type {CommentDTO, CommentVO} from "../types.ts";
+import type {CommentDTO, Comment} from "../types.ts";
 
-export async function getCommentsByVenueId(venueId:number,token:string):Promise<CommentVO[]>
+export async function getCommentsByVenueId(venueId:number,token:string):Promise<Comment[]>
 {
     try{
     const response = await fetch("/api/comments/"+venueId, {
@@ -27,7 +27,7 @@ catch (error) {
     throw error;
     }
 }
-export async function addComment(e:CommentDTO,token:string):Promise<CommentVO[]>
+export async function addComment(e:CommentDTO,token:string):Promise<Comment[]>
 {
     try{
         const response = await fetch("/api/comments", {
@@ -55,7 +55,7 @@ export async function addComment(e:CommentDTO,token:string):Promise<CommentVO[]>
         throw error;
     }
 }
-export async function thumbUpComment(commentId:number,token:string):Promise<CommentVO[]>
+export async function thumbUpComment(commentId:number,token:string):Promise<Comment[]>
 {
     try{
         const response = await fetch("/api/comments/thumbs/"+commentId, {

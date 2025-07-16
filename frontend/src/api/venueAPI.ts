@@ -127,3 +127,53 @@ export async function deleteVenue(venueId:number,token:string):Promise<string> {
         throw error;
     }
 }
+export async function favourVenue(venueId:number,token:string):Promise<string> {
+    try {
+        const response = await fetch(`/api/venue/favour/${venueId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`收藏场馆api失败: ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.code == 200) {
+            return result.data;
+        } else {
+            throw new Error(result.msg || ("收藏场馆api失败"+response.status));
+        }
+    } catch (error) {
+        console.error("收藏场馆api错误:", error);
+        throw error;
+    }
+}
+export async function getFavours(token:string):Promise<number[]> {
+    try {
+        const response = await fetch(`/api/venue/favour`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`获取收藏场馆api失败: ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.code == 200) {
+            return result.data;
+        } else {
+            throw new Error(result.msg || ("获取收藏场馆api失败"+response.status));
+        }
+    } catch (error) {
+        console.error("获取收藏场馆api错误:", error);
+        throw error;
+    }
+}

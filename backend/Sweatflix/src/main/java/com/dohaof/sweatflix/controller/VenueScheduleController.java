@@ -3,7 +3,9 @@ package com.dohaof.sweatflix.controller;
 import com.dohaof.sweatflix.dto.VScheduleDTO;
 import com.dohaof.sweatflix.service.VenueScheduleService;
 import com.dohaof.sweatflix.dto.BookResponseDTO;
+import com.dohaof.sweatflix.vo.DetailOrderVO;
 import com.dohaof.sweatflix.vo.Response;
+import com.dohaof.sweatflix.vo.ScheduleOrderVO;
 import com.dohaof.sweatflix.vo.VenueScheduleVO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,10 @@ public class VenueScheduleController {
     @GetMapping("/{venue_id}")
     public Response<List<VenueScheduleVO>> getVenueSchedules(@PathVariable Integer venue_id) {
         return Response.buildSuccess(venueScheduleService.getScheduleByVenueID(venue_id));
+    }
+    @GetMapping("/orders/{user_id}")
+    public Response<List<DetailOrderVO>> getOrdersByUSerID(@PathVariable Integer user_id) {
+        return Response.buildSuccess(venueScheduleService.getScheduleByUSerID(user_id));
     }
     @PostMapping("/{venue_schedule_id}")
     public Response<BookResponseDTO> bookVenue(@PathVariable Integer venue_schedule_id, HttpServletRequest request) {

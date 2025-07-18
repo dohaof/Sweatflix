@@ -105,3 +105,12 @@ export interface CommentDTO {
     rate: number,
     images: string[]
 }
+export interface Notice {
+    id: number;
+    text: string;
+    content: string;
+    venueId : number;
+    venueName: string;
+    createTime: string;
+    read: boolean;
+}

@@ -8,5 +8,6 @@ import java.util.List;
 public interface FavouriteRepository extends JpaRepository<Favourite, Integer> {
     List<Favourite> findByUserId(Integer userId);
 
+    List<Favourite> findByVenueId(Integer venueId);
     Favourite findByUserIdAndVenueId(Integer userId, Integer venueId);
 }

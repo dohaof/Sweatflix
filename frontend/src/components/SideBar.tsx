@@ -1,5 +1,5 @@
-import {type JSX, useContext} from "react";
-import {HomeContext, UserContext} from "../contexts/globalContexts.tsx";
+import {type JSX, useContext, useEffect} from "react";
+import {HomeContext, NotificationContext, UserContext} from "../contexts/globalContexts.tsx";
 import {LoginForm} from "./LoginForm.tsx";
 import {useNavigate} from "react-router-dom";
 
@@ -7,6 +7,7 @@ import {useNavigate} from "react-router-dom";
 export function SideBar(): JSX.Element {
     const state = useContext(UserContext);
     const homeState=useContext(HomeContext);
+    const noticeState=useContext(NotificationContext);
     const navigate = useNavigate();
     const renderIfNorm=(e:string,f:()=>void)=>{
         if (state==null||state.currentUser==null||state.currentUser.role=="admin"){return null;}
@@ -16,6 +17,14 @@ export function SideBar(): JSX.Element {
         if (state==null||state.currentUser==null||state.currentUser.role=="norm"){return null;}
         return  <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition" onClick={f}>{e}</button></li>
     }
+    const handleNotice=()=>{
+        noticeState?.setIsNewNotice(false);
+        navigate("/notification");
+        // console.log(noticeState)
+    }
+    useEffect(() => {
+        console.log(noticeState)
+    },[noticeState])
     return (
         <div className={`
       fixed top-2/25 bottom-0 right-0 w-full md:w-[24vw] shadow-xl z-40 rounded-2xl transform transition-transform bg-gradient-to-tr from-cyan-300 to-blue-300 border
@@ -55,7 +64,20 @@ export function SideBar(): JSX.Element {
                                     }}>账号信息修改</button></li>
                                     {renderIfNorm("预约历史",()=>{navigate('/history')})}
                                     {renderIfAdmin("增加场地",()=>{navigate('/venue/create')})}
-                                    {renderIfNorm("通知查看",()=>{console.log("tobe done")})}
+                                    {state?.currentUser.role=='norm'&&<li className="relative">
+                                        <button
+                                            className="w-full py-2 bg-red-500 rounded-lg hover:text-blue-700 transition"
+                                            onClick={() => {handleNotice()}}
+                                        >
+                                            通知查看
+                                            {/* 小红点 - 只有在有通知时显示 */}
+                                            {noticeState?.isNewNotice && (
+                                                <span className="absolute top-3 right-3 w-6 h-6 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                                                    <p className={`text-white`}> N</p>
+                                                </span>
+                                            )}
+                                        </button>
+                                    </li>}
                                     <li><button className="w-full py-2 bg-red-500  rounded-lg hover:text-blue-700 transition" onClick={()=>{
                                         state?.setCurrentUser(null)
                                         state?.setIsLoggedIn(false);

@@ -25,6 +25,10 @@ describe('User相关组件', () => {
         setCurrentUser: mockSetCurrentUser,
         isLoggedIn: false,
         setIsLoggedIn: mockSetIsLoggedIn,
+        favourList:[],
+        setFavourList: vi.fn(),
+        websocket:null,
+        setWebSocket: vi.fn()
     }
 
     beforeEach(() => {

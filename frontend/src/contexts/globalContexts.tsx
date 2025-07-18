@@ -12,4 +12,10 @@ export const UserContext = createContext<{
     setIsLoggedIn:React.Dispatch<React.SetStateAction<boolean>>;
     favourList:number[]
     setFavourList:React.Dispatch<React.SetStateAction<number[]>>;
+    websocket: WebSocket | null;
+    setWebSocket: React.Dispatch<React.SetStateAction<WebSocket | null>>;
 }| null>(null);
+export const NotificationContext = createContext<{
+    isNewNotice:boolean,
+    setIsNewNotice:React.Dispatch<React.SetStateAction<boolean>>;
+}|null>(null);

@@ -2,6 +2,7 @@ package com.dohaof.sweatflix.controller;
 
 import com.dohaof.sweatflix.dto.CommentsDTO;
 import com.dohaof.sweatflix.service.CommentsService;
+import com.dohaof.sweatflix.service.NoticeService;
 import com.dohaof.sweatflix.vo.CommentsVO;
 import com.dohaof.sweatflix.vo.Response;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentsController {
     private final CommentsService commentsService;
+    private final NoticeService noticeService;
     @PostMapping("")
     public Response<String> createComments(@RequestBody CommentsDTO commentsDTO,HttpServletRequest request) {
         Integer userId= (Integer) request.getAttribute("userId");
@@ -25,7 +27,9 @@ public class CommentsController {
         return Response.buildSuccess(commentsService.getCommentsByVenueId(venue_id));
     }
     @PostMapping("/thumbs/{comments_id}")
-    public Response<String> thumbUp(@PathVariable Integer comments_id) {
+    public Response<String> thumbUp(@PathVariable Integer comments_id,HttpServletRequest request) {
+        Integer userId= (Integer) request.getAttribute("userId");
+        noticeService.NoticeThumbsUp(comments_id,userId);
         return Response.buildSuccess(commentsService.addThumbUp(comments_id));
     }
 }

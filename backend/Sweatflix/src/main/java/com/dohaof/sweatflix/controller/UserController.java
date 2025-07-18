@@ -4,12 +4,17 @@ import com.dohaof.sweatflix.dto.AuthDTO;
 import com.dohaof.sweatflix.dto.LoginResponseDTO;
 import com.dohaof.sweatflix.dto.ModifyDTO;
 import com.dohaof.sweatflix.dto.RegisterDTO;
+import com.dohaof.sweatflix.service.NoticeService;
 import com.dohaof.sweatflix.service.UserService;
 import com.dohaof.sweatflix.util.TokenUtil;
+import com.dohaof.sweatflix.vo.NoticeVO;
 import com.dohaof.sweatflix.vo.Response;
 import com.dohaof.sweatflix.vo.UserVO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3001", allowCredentials = "true")
 @RestController
@@ -18,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
         private final TokenUtil tokenUtil;
         private final UserService userService;
-
+        private final NoticeService noticeService;
         /**
          * 获取用户详情
          */
@@ -48,6 +53,11 @@ public class UserController {
         @PostMapping("/login")
         public Response<LoginResponseDTO> login(@RequestBody AuthDTO authDTO) {
             return Response.buildSuccess(userService.login(authDTO.getPhone(), authDTO.getPassword()));
+        }
+        @GetMapping("/notice")
+        public Response<List<NoticeVO>> getNotice(HttpServletRequest request) {
+                Integer userId= (Integer) request.getAttribute("userId");
+                return Response.buildSuccess(noticeService.getNotice(userId));
         }
 }
 

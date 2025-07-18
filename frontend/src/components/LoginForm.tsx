@@ -3,10 +3,11 @@ import {useContext, useState} from "react";
 import * as React from "react";
 import {useNavigate} from "react-router-dom";
 import {userLogin} from "../api/userAPI.ts";
-import { UserContext} from "../contexts/globalContexts.tsx";
+import {NotificationContext, UserContext} from "../contexts/globalContexts.tsx";
 export function LoginForm() {
     const navigate = useNavigate();
     const state = useContext(UserContext);
+    const noticeState = useContext(NotificationContext);
     console.log(state);
     const [credentials, setCredentials] = useState({
         phone: '',
@@ -31,6 +32,47 @@ export function LoginForm() {
             }
             state.setCurrentUser(responseData.userVO);
             state.setIsLoggedIn(true);
+            //websocket
+            const token = responseData.token;
+            const ws = new WebSocket(`ws://localhost:8088/ws`);
+
+            ws.onopen = () => {
+                console.log("WebSocket连接已建立");
+                // 发送认证消息
+                ws.send(JSON.stringify({
+                    type: 'AUTHENTICATE',
+                    token: token
+                }));
+            };
+
+            ws.onmessage = (event) => {
+                console.log("收到服务器消息:", event.data);
+                // 处理服务器消息
+                try {
+                    const message = JSON.parse(event.data);
+                    if (message.type == 'AUTH_SUCCESS') {
+                        state.setWebSocket(message.content);
+                        //保存WebSocket实例到上下文
+                    }else if(message.type == 'AUTH_FAILURE') {
+                        console.error(message);
+                    }else if(message.type == 'NEW_NOTICE') {
+                        noticeState?.setIsNewNotice(true);
+                        console.log("new notice")
+                    }
+                } catch (error) {
+                    console.error("消息解析错误:", error);
+                }
+            };
+
+            ws.onclose = () => {
+                console.log("WebSocket连接关闭");
+            };
+
+            ws.onerror = (error) => {
+                console.error("WebSocket错误:", error);
+            };
+
+
             alert('登录成功！');
         } catch (error) {
             console.error('登录失败:', error);

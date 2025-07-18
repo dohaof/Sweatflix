@@ -1,6 +1,7 @@
 package com.dohaof.sweatflix.controller;
 
 import com.dohaof.sweatflix.dto.VScheduleDTO;
+import com.dohaof.sweatflix.service.NoticeService;
 import com.dohaof.sweatflix.service.VenueScheduleService;
 import com.dohaof.sweatflix.dto.BookResponseDTO;
 import com.dohaof.sweatflix.vo.DetailOrderVO;
@@ -18,9 +19,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VenueScheduleController {
     private final VenueScheduleService venueScheduleService;
+    private final NoticeService noticeService;
     @PostMapping("")
     public Response<String> createVenueSchedule(@RequestBody VScheduleDTO VScheduleDTO) {
-        return Response.buildSuccess(venueScheduleService.addCreateVenueSchedule(VScheduleDTO));
+        Response<String> response = Response.buildSuccess(venueScheduleService.addCreateVenueSchedule(VScheduleDTO));
+        noticeService.NoticeFavourUser(VScheduleDTO.getVenueId());
+        return response;
     }
 
     @DeleteMapping("/{venue_schedule_id}")

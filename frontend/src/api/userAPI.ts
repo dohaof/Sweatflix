@@ -109,4 +109,28 @@ export async function getOrderByUserId(userId:number,token:string){
         console.error("获取用户订单api错误:", error);
         throw error;
     }
+}export async function getNotice(token:string){
+    try {
+        const response = await fetch("/api/users/notice", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`获取用户通知api失败: ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.code == 200) {
+            return result.data; // “修改成功”
+        } else {
+            throw new Error(result.msg || ("获取用户通知api失败:"+result.status));
+        }
+    } catch (error) {
+        console.error("获取用户通知api错误:", error);
+        throw error;
+    }
 }

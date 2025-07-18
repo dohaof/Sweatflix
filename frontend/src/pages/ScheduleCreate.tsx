@@ -83,7 +83,7 @@ export function ScheduleCreate() {
             const token = sessionStorage.getItem('authToken');
             // 调用创建API
             const responseData = await createSchedule(formData,token as string);
-            window.alert(responseData)
+            alert(responseData)
             setSubmitSuccess(true);
             navigate(-1);
         } catch (err) {
@@ -114,13 +114,14 @@ export function ScheduleCreate() {
         );
     }
 
-    if (error && !venue) {
+    if (error|| !venue) {
         return (
             <div className="alert alert-error max-w-3xl mx-auto mt-8">
             <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>{error}</span>
+                <span>{error}</span>
+                <button onClick={()=>{navigate('/home')}}>回到首页</button>
             </div>
     );
     }
@@ -189,13 +190,13 @@ export function ScheduleCreate() {
         </div>
     )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6" >
             {/* 开始时间 */}
             <div className="form-control">
-    <label className="label">
+    <label className="label" htmlFor="startTime">
     <span className="label-text font-semibold">开始时间</span>
         </label>
-        <input
+        <input id="startTime"
         type="datetime-local"
         name="startTime"
         value={formData.startTime}
@@ -210,10 +211,11 @@ export function ScheduleCreate() {
 
         {/* 结束时间 */}
         <div className="form-control">
-        <label className="label">
+        <label className="label" htmlFor="endTime">
         <span className="label-text font-semibold">结束时间</span>
             </label>
             <input
+                id="endTime"
         type="datetime-local"
         name="endTime"
         value={formData.endTime}
@@ -228,7 +230,7 @@ export function ScheduleCreate() {
 
         {/* 容量 */}
         <div className="form-control">
-        <label className="label">
+        <label className="label" htmlFor="capacity">
         <span className="label-text font-semibold">最大容量</span>
             </label>
             <div className="join">
@@ -243,6 +245,7 @@ export function ScheduleCreate() {
         -
             </button>
         <input
+            id="capacity"
         type="number"
         name="capacity"
         value={formData.capacity}
@@ -269,7 +272,7 @@ export function ScheduleCreate() {
 
         {/* 价格 */}
         <div className="form-control">
-        <label className="label">
+        <label className="label" htmlFor="price">
         <span className="label-text font-semibold">价格 (¥)</span>
             </label>
             <div className="relative">
@@ -277,6 +280,7 @@ export function ScheduleCreate() {
         ¥
         </span>
         <input
+            id="price"
         type="number"
         name="price"
         value={formData.price}

@@ -157,15 +157,6 @@ export function VenueDetail() {
                 alert('图片大小不能超过20MB');
                 continue;
             }
-
-            // const reader = new FileReader();
-            // reader.onload = (event) => {
-            //     if (event.target?.result) {
-            //         newImages.push(event.target.result as string);
-            //         setNewComment({...newComment, images: newImages});
-            //     }
-            // };
-            // reader.readAsDataURL(file);
             try {
                 // 上传到服务器
                 const imageUrl = await uploadImageToServer(file);
@@ -222,7 +213,7 @@ export function VenueDetail() {
                 setLoading(false);
             }
         };
-        if (!state?.currentUser){
+        if (!state?.currentUser||!state.isLoggedIn){
             window.alert('请先登录');
             navigate('/home');
         }
@@ -247,7 +238,7 @@ export function VenueDetail() {
     }, [state, state?.favourList, venue_id]);
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-screen">
+            <div className="flex justify-center items-center h-screen" >
                 <span className="loading loading-spinner loading-lg"></span>
             </div>
         );
@@ -521,6 +512,7 @@ export function VenueDetail() {
                                                             name={`rating-${comment.id}`}
                                                             className="mask mask-star-2 bg-orange-400"
                                                             checked={i < comment.rate}
+                                                            role='radio'
                                                             readOnly
                                                         />
                                                     ))}
@@ -551,7 +543,8 @@ export function VenueDetail() {
                                     <div className="flex justify-between items-center">
                                         <button
                                             className={`btn btn-sm ${comment.hasThumbed ? 'btn-primary' : 'btn-outline'}`}
-                                            onClick={() => handleThumbUp(comment.id)}
+                                            onClick={() => handleThumbUp(comment.id)
+                                        }
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905a3.61 3.61 0 01-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
@@ -604,6 +597,7 @@ export function VenueDetail() {
                         multiple
                         onChange={handleImageUpload}
                         disabled={newComment.images.length >= 3}
+                        role='imgbar'
                     />
 
                     {newComment.images.length > 0 && (
@@ -643,37 +637,3 @@ export function VenueDetail() {
         </div>
     );
 }
-
-// 示例API函数（需要根据实际API实现）
-// async function getVenueSchedules(token: string, venueId: number): Promise<VenueSchedule[]> {
-//     // 实际实现中调用API
-//     return [
-//         {
-//             id: 1,
-//             venueId,
-//             startTime: "2023-07-20T09:00:00Z",
-//             endTime: "2023-07-20T11:00:00Z",
-//             capacity: 20,
-//             price: 300,
-//             scheduleOrderId: []
-//         },
-//         {
-//             id: 2,
-//             venueId,
-//             startTime: "2023-07-20T13:00:00Z",
-//             endTime: "2023-07-20T15:00:00Z",
-//             capacity: 20,
-//             price: 350,
-//             scheduleOrderId: []
-//         },
-//         {
-//             id: 3,
-//             venueId,
-//             startTime: "2023-07-20T18:00:00Z",
-//             endTime: "2023-07-20T20:00:00Z",
-//             capacity: 20,
-//             price: 400,
-//             scheduleOrderId: []
-//         }
-//     ];
-// }

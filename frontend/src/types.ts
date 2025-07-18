@@ -93,6 +93,7 @@ export interface Comment {
     userId: number;
     userName: string;
     userAvatar: string;
+    venueId: number;
     content: string;
     rate: number;
     images: string[];

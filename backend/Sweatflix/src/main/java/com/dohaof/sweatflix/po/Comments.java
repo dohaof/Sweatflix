@@ -35,6 +35,7 @@ public class Comments {
         CommentsVO vo = new CommentsVO();
         vo.setId(id);
         vo.setContent(content);
+        vo.setVenueId(venue.getId());
         vo.setUserName(author.getUsername());
         vo.setUserAvatar(author.getImage());
         vo.setRate(rate);

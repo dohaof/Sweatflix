@@ -48,8 +48,7 @@ export function NotificationPage() {
             setLoading(false);
             navigate('/home');
         }
-    }, [navigate, state, token]);
-
+    }, []);
     // 切换通知展开状态
     const toggleNotice = (id: number) => {
         setExpandedId(expandedId === id ? null : id);

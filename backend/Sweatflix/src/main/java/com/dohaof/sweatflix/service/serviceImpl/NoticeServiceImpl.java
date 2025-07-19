@@ -7,6 +7,7 @@ import com.dohaof.sweatflix.service.NoticeService;
 import com.dohaof.sweatflix.util.WBUtil;
 import com.dohaof.sweatflix.vo.NoticeVO;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -62,9 +63,10 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public List<NoticeVO> getNotice(Integer userId) {
         return noticeRepository.findByUser_Id(userId).stream().map((e)->{
+            NoticeVO noticeVO=e.toVO();
             e.setRead(true);
             noticeRepository.save(e);
-            return e.toVO();
+            return noticeVO;
         }).collect(Collectors.toList());
     }
 }

@@ -19,7 +19,12 @@ public class TokenUtil {
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRES))
                 .sign(Algorithm.HMAC256(SECRET)); // 使用固定密钥
     }
-
+    public String generateToken(Integer userId) {
+        return JWT.create()
+                .withAudience(userId.toString())
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRES))
+                .sign(Algorithm.HMAC256(SECRET)); // 使用固定密钥
+    }
     public boolean verifyToken(String token) {
         try {
             JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token);

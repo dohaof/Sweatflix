@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @SpringBootTest
 @AutoConfigureMockMvc
-class UserTest {
+class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -51,7 +51,7 @@ class UserTest {
         // 初始化模拟对象行为
         when(loginInterceptor.preHandle(any(), any(), any())).thenReturn(true);
     }
-
+    //这里主要测试拦截器连接，之后就不测了
     @Test
     void testGetUser() throws Exception {
         // 准备模拟数据

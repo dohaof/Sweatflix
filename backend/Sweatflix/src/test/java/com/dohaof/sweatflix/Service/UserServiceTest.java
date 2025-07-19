@@ -1,4 +1,4 @@
-package com.dohaof.sweatflix.service;
+package com.dohaof.sweatflix.Service;
 
 import com.dohaof.sweatflix.dto.LoginResponseDTO;
 import com.dohaof.sweatflix.dto.RegisterDTO;
@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserTest {
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;

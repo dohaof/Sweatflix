@@ -44,7 +44,7 @@ public class VenusScheduleServiceImpl implements VenueScheduleService {
     }
 
     @Override
-    public String removeScheduleOrder(Integer venueScheduleId) {
+    public String removeSchedule(Integer venueScheduleId) {
         VenueSchedule venueSchedule=venueScheduleRepository.findById(venueScheduleId).orElseThrow(()-> new SFException("409", "不存在的场地"));
         venueScheduleRepository.delete(venueSchedule);
         return "删除成功";
@@ -103,5 +103,16 @@ public class VenusScheduleServiceImpl implements VenueScheduleService {
     @Override
     public List<DetailOrderVO> getScheduleByUSerID(Integer userId) {
         return scheduleOrderRepository.findScheduleOrderByUser_Id(userId).stream().map(ScheduleOrder::toDetailVO).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public String removeOrder(Integer orderId) {
+        ScheduleOrder scheduleOrder = scheduleOrderRepository.findById(orderId).orElseThrow(() -> new SFException("409", "不存在的预约"));
+        if(!(scheduleOrder.getPaySuccess()&&scheduleOrder.getVenueSchedule().getStartTime().isAfter(LocalDateTime.now()))){
+            throw new SFException("418","只应该删除付款成功的未开始订单");
+        }
+        scheduleOrderRepository.delete(scheduleOrder);
+        return "删除成功";
     }
 }

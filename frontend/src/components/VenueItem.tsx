@@ -7,6 +7,7 @@ interface VenueItemProps {
 }
 
 const VenueItem: React.FC<VenueItemProps> = ({ venue, onClick }) => {
+
     return (
         <div
             className="bg-gradient-to-tl from-blue-50 to-green-200 rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition"
@@ -27,7 +28,7 @@ const VenueItem: React.FC<VenueItemProps> = ({ venue, onClick }) => {
     <div className="flex justify-between items-start">
     <h3 className="text-xl font-bold text-gray-800">{venue.name}</h3>
             <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-        {venue?.scheduleId?.length>0?'有预约项':'无预约项'}
+        {venue?.schedulesId?.length>0?'有预约项':'无预约项'}
             </span>
         </div>
         <div className="mt-2 flex items-center text-gray-600">

@@ -2,12 +2,11 @@ import {useState, useEffect, useContext} from 'react';
 import { getOrderByUserId } from '../api/userAPI.ts';
 import type {DetailOrder} from "../types.ts";
 import {UserContext} from "../contexts/globalContexts.tsx";
-import {useNavigate} from "react-router-dom"; // 根据实际路径调整
+import {useNavigate} from "react-router-dom";
+import {cancelScheduleOrder} from "../api/scheduleAPI.ts"; // 根据实际路径调整
 
 // 订单状态类型
 type OrderStatus = 'all' | 'paid' | 'unpaid';
-
-// 扩展的订单信息接口，包含场馆和排期详情
 
 export function OrderHistoryPage() {
     const [orders, setOrders] = useState<DetailOrder[]>([]);
@@ -89,7 +88,19 @@ export function OrderHistoryPage() {
             minute: '2-digit'
         });
     };
-
+    const handleClick = async (orderId:number) => {
+        if (!window.confirm('确定要取消这个订单吗？此操作不可撤销。')) {
+            return;
+        }
+        try {
+            await cancelScheduleOrder(orderId,sessionStorage.getItem("authToken") as string);
+            window.alert("取消成功")
+            navigate('/home'); // 删除成功后跳转回场馆列表
+        } catch (err) {
+            setError(err instanceof Error ? err.message : '取消订单失败');
+            console.error('取消订单失败:', err);
+        }
+    }
     // 渲染加载状态
     if (loading) {
         return (
@@ -112,9 +123,9 @@ export function OrderHistoryPage() {
                 </div>
                 <button
                     className="btn btn-primary mt-4"
-                    onClick={() => window.location.reload()}
+                    onClick={() => navigate('/home')}
                 >
-                    重新加载
+                   返回主页
                 </button>
             </div>
         );
@@ -261,6 +272,11 @@ export function OrderHistoryPage() {
                                                 查看详情
                                             </button>
                                     </div>
+                                   {order.paySuccess&&<div className="card-actions justify-end">
+                                        <button className="btn btn-outline" onClick={()=>{handleClick(order.id)}}>
+                                            取消订单
+                                        </button>
+                                    </div>}
                                 </div>
                             </div>
                         </div>

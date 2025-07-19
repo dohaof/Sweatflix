@@ -37,7 +37,7 @@ const mockVenue: Venue = {
     name: '测试场馆',
     description: '这是一个测试场馆',
     image: 'venue-image.jpg',
-    scheduleId:[]
+    schedulesId:[]
 };
 
 const mockFormData: VenueScheduleCreation = {

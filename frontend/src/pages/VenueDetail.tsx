@@ -299,9 +299,12 @@ export function VenueDetail() {
 
                 <div className="md:w-1/2">
 
-                    <h1 className="text-3xl font-bold mb-4">{venue.name}</h1>
-                    <p className="text-gray-700 mb-6 whitespace-pre-line">{venue.description}</p>
+                    <div className={'flex items-center justify-between w-full'}>
+                        <h1 className="text-3xl font-bold mb-4">{venue.name}</h1>
+                        <button onClick={()=>{navigate('/home')}}>返回主页</button>
+                    </div>
 
+                    <p className="text-gray-700 mb-6 whitespace-pre-line">{venue.description}</p>
                     <div className="bg-base-200 p-4 rounded-lg">
                         <h2 className="text-xl font-semibold mb-3">基本信息</h2>
                         <div className="grid grid-cols-2 gap-3">

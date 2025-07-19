@@ -6,7 +6,6 @@ import com.dohaof.sweatflix.service.VenueScheduleService;
 import com.dohaof.sweatflix.dto.BookResponseDTO;
 import com.dohaof.sweatflix.vo.DetailOrderVO;
 import com.dohaof.sweatflix.vo.Response;
-import com.dohaof.sweatflix.vo.ScheduleOrderVO;
 import com.dohaof.sweatflix.vo.VenueScheduleVO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ public class VenueScheduleController {
 
     @DeleteMapping("/{venue_schedule_id}")
     public Response<String> deleteVenue(@PathVariable Integer venue_schedule_id) {
-        return Response.buildSuccess(venueScheduleService.removeScheduleOrder(venue_schedule_id));
+        return Response.buildSuccess(venueScheduleService.removeSchedule(venue_schedule_id));
     }
     @GetMapping("/{venue_id}")
     public Response<List<VenueScheduleVO>> getVenueSchedules(@PathVariable Integer venue_id) {
@@ -43,6 +42,10 @@ public class VenueScheduleController {
     public Response<BookResponseDTO> bookVenue(@PathVariable Integer venue_schedule_id, HttpServletRequest request) {
         Integer userId= (Integer) request.getAttribute("userId");
         return Response.buildSuccess(venueScheduleService.createOrder(venue_schedule_id, userId));
+    }
+    @DeleteMapping("/order/{order_id}")
+    public Response<String> deleteVenueSchedule(@PathVariable Integer order_id) {
+        return Response.buildSuccess(venueScheduleService.removeOrder(order_id));
     }
     @PostMapping("/notify/{schedule_order_id}/{success}")
     public Response<String> payNotify(@PathVariable Integer schedule_order_id,@PathVariable Boolean success) {

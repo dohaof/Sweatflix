@@ -123,3 +123,28 @@ export async function getSchedulesOfVenue(venueId:number,token:string):Promise<V
         throw error;
     }
 }
+export async function cancelScheduleOrder(orderId:number,token:string):Promise<BookResponse> {
+    try {
+        const response = await fetch("/api/venue_schedule/order/"+orderId, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`取消预定时间段api失败: ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.code == 200) {
+            return result.data;
+        } else {
+            throw new Error(result.msg || ("取消场馆时间段api失败"+response.status));
+        }
+    } catch (error) {
+        console.error("取消场馆时间段api错误:", error);
+        throw error;
+    }
+}

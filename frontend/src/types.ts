@@ -31,7 +31,7 @@ export interface Venue {
     name: string;
     description: string;
     image: string;
-    scheduleId: number[];
+    schedulesId: number[];
 }
 export interface VenueChange {
     id: number;
@@ -68,14 +68,14 @@ export interface ScheduleOrder {
     id: number;
     userId: number;
     venueScheduleId: number;
-    orderId: string;
+    orderTime: string;
     paySuccess: boolean;
 }
 export interface DetailOrder {
     id: number;
     userId: number;
     venueScheduleId: number;
-    orderId: string;
+    orderTime: string;
     paySuccess: boolean;
     venueId: number;
     venueName: string;

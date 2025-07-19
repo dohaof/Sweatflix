@@ -47,7 +47,7 @@ describe('VenueDetail 组件测试', () => {
         name: '测试场馆',
         description: '这是一个测试场馆描述',
         image: 'test-image.jpg',
-        scheduleId:[]
+        schedulesId:[]
     }
 
     const mockSchedule: VenueSchedule = {

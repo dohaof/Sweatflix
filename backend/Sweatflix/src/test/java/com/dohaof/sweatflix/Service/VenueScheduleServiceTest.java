@@ -29,7 +29,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -113,21 +112,21 @@ class VenueScheduleServiceTest {
 
     // 测试删除预约
     @Test
-    void removeScheduleOrder_Success() {
+    void removeSchedule_Success() {
         when(venueScheduleRepository.findById(10)).thenReturn(Optional.of(venueSchedule));
 
-        String result = venueScheduleService.removeScheduleOrder(10);
+        String result = venueScheduleService.removeSchedule(10);
 
         assertEquals("删除成功", result);
         verify(venueScheduleRepository).delete(venueSchedule);
     }
 
     @Test
-    void removeScheduleOrder_NotFound() {
+    void removeSchedule_NotFound() {
         when(venueScheduleRepository.findById(99)).thenReturn(Optional.empty());
 
         SFException exception = assertThrows(SFException.class, () ->
-                venueScheduleService.removeScheduleOrder(99)
+                venueScheduleService.removeSchedule(99)
         );
 
         assertEquals("409", exception.getCode());
